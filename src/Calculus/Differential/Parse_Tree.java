@@ -62,7 +62,7 @@ public class Parse_Tree extends Binary_Tree<Token>{
             if(this_node.get_operand_2().equals("x")){
                 f_prime.f_prime = f_prime.derive("single","x","x");
             }
-            else if(is_constant(this_node.get_operand_2())){
+            else if(isConstant(this_node.get_operand_2())){
                 f_prime.f_prime = f_prime.derive("constant","x","x");
             }
             
@@ -132,14 +132,14 @@ public class Parse_Tree extends Binary_Tree<Token>{
         Token parsed_string = null;
         
         if(isReducible(f))
-            return arithmetic_operator(f);
-        if(parsed_string == null){
-            parsed_string = single_operand(f);
-            if(parsed_string == null){
-                parsed_string = single_function(f);
-            }  
-        }
+            return expressionToken(f);
         
+        if(isConstant(f) || isSingleVar(f))
+            return singleTermToken(f);
+        
+        if(parsed_string == null)
+            parsed_string = singleFunctionToken(f);
+             
         return parsed_string;
     
     }
@@ -192,7 +192,7 @@ public class Parse_Tree extends Binary_Tree<Token>{
                     int index = i+1;
                     while(!(f.charAt(index)==')' || f.charAt(index)=='+' ||
                                                   f.charAt(index)=='-') ||
-                                                  is_constant("" + f.charAt(index))){
+                                                  isConstant("" + f.charAt(index))){
                         index++;
                     }
                     String a = f.substring(0,i);
@@ -269,21 +269,19 @@ public class Parse_Tree extends Binary_Tree<Token>{
      * @param f
      * @return 
      */
-    public Token arithmetic_operator(String f){
+    public Token expressionToken(String f){
 
-        // Verify that a null string was not passed in
-        if(f != null){
-            if(hasExplicitOperator(f))
-                return explicitTokenize(f);
-            
-            if(hasConstantMultiple(f))
-                return constMultTokenize(f);
-            
-            if(hasParentheseMultiple(f))
-                return parentheseTokenize(f);
-        }
-        
-        return null;
+        if(hasExplicitOperator(f))
+            return explicitOperatorSplice(f);
+
+        if(hasConstantMultiple(f))
+            return constMultSplice(f);
+
+        if(hasParentheseMultiple(f))
+            return parentheseMultSplice(f);
+
+        else
+            return null;
         
     }
     
@@ -321,13 +319,15 @@ public class Parse_Tree extends Binary_Tree<Token>{
             return Character.isDigit(f.charAt(0)) && f.charAt(1) != '^';
         else
             return false;
+        
     }
     
     public boolean hasParentheseMultiple(String f){
         
         for(int i = 0; i < f.length() - 1; i++){
-            if(f.charAt(i)==')' && f.charAt(i+1)=='(' || f.charAt(i) == ')' && 
-              (f.charAt(i+1) != ')' && f.charAt(i+1) != '^'))
+            if(f.charAt(i) == ')' && f.charAt(i + 1) == '(' || 
+               f.charAt(i) == ')' && 
+              (f.charAt(i + 1) != ')' && f.charAt(i + 1) != '^'))
                 return true;
         }
         
@@ -335,7 +335,7 @@ public class Parse_Tree extends Binary_Tree<Token>{
         
     }
     
-    public Token explicitTokenize(String f){
+    public Token explicitOperatorSplice(String f){
         HashMap<Integer,Integer> parentheses = get_parentheses(f);
         for(int i = 0; i < f.length(); i++){
             if(f.charAt(i) == '+' || f.charAt(i) == '-' || f.charAt(i) == '/'){
@@ -366,7 +366,7 @@ public class Parse_Tree extends Binary_Tree<Token>{
         
     }
     
-    public Token constMultTokenize(String f){
+    public Token constMultSplice(String f){
         
         int i = 0;
         while(i < f.length() && Character.isDigit(f.charAt(i)))
@@ -377,7 +377,7 @@ public class Parse_Tree extends Binary_Tree<Token>{
     
     }
     
-    public Token parentheseTokenize(String f){
+    public Token parentheseMultSplice(String f){
         
         int index = 0;
         
@@ -405,133 +405,18 @@ public class Parse_Tree extends Binary_Tree<Token>{
      * @return  A new Token object with operand_1 and operator set to null, and
      *          operand_2 set to the string f
      */
-    public Token single_operand(String f){
+    public Token singleTermToken(String f){
        
-        if(f != null){
-            // Create new Token object to potentially be passed back
-            Token parsed_string = new Token();  
-
-            // Assume the function is a constant, If a non-digit is found then we
-            // can conclude our supposition was false, and the function is not const
-            boolean is_constant = true;
-            for(int i=0;i<f.length();i++){
-                if(!Character.isDigit(f.charAt(i))){
-                    is_constant = false;
-                }
-            }
-
-            // If the function is constant or a single variable, set the Token
-            // object's data members to the proper values and return it
-            if(is_constant || f.equals("x")){
-                parsed_string.set_operand_1(null);
-                parsed_string.set_operand_2(f);
-                parsed_string.set_operator(null);
-                return parsed_string;
-            }
-        }  
-    
-        // If function is not constant nor is it a single variable, return null
-        return null;
+        return new Token(null,f,null);
  
     }
     
-    /**
-     * Checks to see if a given function is an elementary function that has been
-     * isolated. If so a new Token is created with operand_1 set to null,
-     * operand_2 set to the String f, and operator set to the given function
-     * with no arguments
-     * @param f The function f(x) to examine
-     * @return A new Token object if a single function, null otherwise
-     */
-    public Token single_function(String f){
-        
-        // Declare a new Token object and a string to hold the substrings of f
-        Token parsed_string = new Token();
-        String sub_function = "";
-        
-        if(f != null){
-            // Run through the string while creating substrings and checking them
-            // against the HashSet of elementary functions
-            for(int i=0;i<f.length();i++){
-                sub_function += f.charAt(i); // Concatinate character to substring
-
-                if(elementaries.contains(sub_function)){ // Check substring against
-                    parsed_string.set_operand_1(null);   // the hash table
-                    int j = i+2;
-
-                    while(f.charAt(j) != ')'){
-                        j++;
-                    }
-
-                    parsed_string.set_operand_2(f); // If found set the data members
-                    parsed_string.set_operator(sub_function); // of the Token object
-                    return parsed_string;                     // and return it.
-                }
-                if(sub_function.charAt(i) == '^'){
-                    String left = "";
-                    int end = i-1;
-                    int start = i-1;
-                    int j = 0;
-                    if(start >= 0 && sub_function.charAt(start)==')'){
-                        start--;
-                        int count = 1;
-                        while(count > 0){
-                            if(sub_function.charAt(start) == ')'){
-                                count++;
-                            }
-                            if(sub_function.charAt(start) == '('){
-                                count--;
-                            }
-                            start--;
-                        }
-                        left = sub_function.substring(start+2, end);
-                        j = i + 1;
-                    }
-                    else{
-                        start = i;
-                        end = i;
-                        while(start > 0 && Character.isLetter(sub_function.charAt(start))){
-                            start--;
-                        }
-                        left = sub_function.substring(start,end);
-                        j = i + 1;
-                    }
-                    
-                    while(f.charAt(j) != ')'){
-                        sub_function += f.charAt(j);
-                        j++;
-                    }
-                    sub_function += f.charAt(j);
-                    
-                    String right = "";
-                    start = i + 2;
-                    end = i + 2;
-                    while(sub_function.charAt(end) != ')'){
-                        end++;
-                    }
-                    right = sub_function.substring(start,end);
-                    parsed_string.set_operand_1(left);
-                    parsed_string.set_operand_2(right);
-                    parsed_string.set_operator("x^n");
-                    return parsed_string;
-                }
-
-
-            }
-        }
-        
-            
-        // If the function is not a known base function return null
-        return null;
-        
-    }
-    
-    /**
+        /**
      * Determines whether a given function is a constant function
      * @param f The function f(x)
      * @return True if the function is constant, false otherwise
      */
-    public boolean is_constant(String f){
+    public boolean isConstant(String f){
         
         // Check to see if there are any non-digits in the string, if so the 
         // function is not constant
@@ -542,6 +427,84 @@ public class Parse_Tree extends Binary_Tree<Token>{
         }
         
         return true;
+        
+    }
+    
+    public boolean isSingleVar(String f){
+        
+        return f.equals("x");
+        
+    }
+    
+    /**
+     * Checks to see if a given function is an elementary function that has been
+     * isolated. If so a new Token is created with operand_1 set to null,
+     * operand_2 set to the String f, and operator set to the given function
+     * with no arguments
+     * @param f The function f(x) to examine
+     * @return A new Token object if a single function, null otherwise
+     */
+    public Token singleFunctionToken(String f){
+        
+        // Declare a new Token object and a string to hold the substrings of f
+        Token parsed_string = new Token();
+        
+        // Run through the string while creating substrings and checking them
+        // against the HashSet of elementary functions
+        for(int i = 0; i < f.length(); i++){
+            String sub_function = f.substring(0, i + 1); 
+            if(elementaries.contains(sub_function)){
+                int j = i + 2;
+                while(f.charAt(j) != ')')
+                    j++;
+                return new Token(null, f, sub_function);
+            }
+            if(sub_function.charAt(i) == '^'){
+                String left = "";
+                int end = i - 1;
+                int start = i - 1;
+                int j = 0;
+                if(start >= 0 && sub_function.charAt(start)==')'){
+                    start--;
+                    int count = 1;
+                    while(count > 0){
+                        if(sub_function.charAt(start) == ')'){
+                            count++;
+                        }
+                        if(sub_function.charAt(start) == '('){
+                            count--;
+                        }
+                        start--;
+                    }
+                    left = sub_function.substring(start+2, end);
+                    j = i + 1;
+                }
+                else{
+                    start = i;
+                    end = i;
+                    while(start > 0 && Character.isLetter(sub_function.charAt(start))){
+                        start--;
+                    }
+                    left = sub_function.substring(start,end);
+                    j = i + 1;
+                }
+                while(f.charAt(j) != ')'){
+                    sub_function += f.charAt(j);
+                    j++;
+                }
+                sub_function += f.charAt(j);
+                String right = "";
+                start = i + 2;
+                end = i + 2;
+                while(sub_function.charAt(end) != ')'){
+                    end++;
+                }
+                right = sub_function.substring(start,end);
+                return new Token(left, right, "x^n");
+            }
+        }
+        
+        return null;
         
     }
     

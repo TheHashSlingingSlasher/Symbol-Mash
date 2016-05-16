@@ -1,7 +1,5 @@
 /*
- * Name: Alec Farfan
- * Date: 05/15/2015
- * Purpose: Parse Tree Class
+ * Parse Tree Class
  */
 package Calculus.Differential;
 
@@ -131,9 +129,10 @@ public class Parse_Tree extends Binary_Tree<Token>{
     public Token parse(String f){
         
         f = clean(f);
-        Token parsed_string;
+        Token parsed_string = null;
         
-        parsed_string = arithmetic_operator(f);
+        if(isReducible(f))
+            return arithmetic_operator(f);
         if(parsed_string == null){
             parsed_string = single_operand(f);
             if(parsed_string == null){
@@ -271,58 +270,130 @@ public class Parse_Tree extends Binary_Tree<Token>{
      * @return 
      */
     public Token arithmetic_operator(String f){
-        
+
         // Verify that a null string was not passed in
         if(f != null){
-            if((f.contains("+") || f.contains("-")|| f.contains("/"))){
-                HashMap<Integer,Integer> parentheses = get_parentheses(f);
-                for(int i = 0; i < f.length(); i++){
-                    if(f.charAt(i) == '+' || f.charAt(i) == '-' || f.charAt(i) == '/'){
-                        boolean check = true;
-                        for(Map.Entry<Integer,Integer> entry : parentheses.entrySet()){
-                            if(i > entry.getKey() && i < entry.getValue()){
-                                check = false;
-                                break;
-                            }
-                        }
-                        if(check){
-                            String a = f.substring(0,i);
-                            String b = f.substring(i+1,f.length());
-                            switch(f.charAt(i)){
-                                case '+':
-                                    return new Token(a,b,"+");
-                                case '-':
-                                    return new Token(a,b,"-");
-                                case '/':
-                                    return new Token(a,b,"/");
-                            }
-                        }    
-                    }
-                    
-                }
-            }
-            if(f.length()>1){
-                if(Character.isDigit(f.charAt(0)) && f.charAt(1) != '^'){
-                    int i = 0;
-                    while(Character.isDigit(f.charAt(i)))
-                        i++;
-                    String a = f.substring(0,i);
-                    String b = f.substring(i,f.length());
-                    return new Token(a,b,"*");
-                }
-            }
-
-            for(int i=0;i<f.length()-1;i++){
-                if(f.charAt(i)==')' && f.charAt(i+1)=='(' ||
-                   f.charAt(i) == ')' && (f.charAt(i+1) != ')' && f.charAt(i+1) != '^')){
-                    String a = f.substring(0,i+1);
-                    String b = f.substring(i+1,f.length());
-                    return new Token(a,b,"*");  
-                }
-            }
+            if(hasExplicitOperator(f))
+                return explicitTokenize(f);
+            
+            if(hasConstantMultiple(f))
+                return constMultTokenize(f);
+            
+            if(hasParentheseMultiple(f))
+                return parentheseTokenize(f);
         }
         
         return null;
+        
+    }
+    
+    public boolean isReducible(String f){
+        
+        return hasExplicitOperator(f) || hasConstantMultiple(f) ||
+               hasParentheseMultiple(f);
+        
+    }
+    
+    public boolean hasExplicitOperator(String f){
+        
+        HashMap<Integer,Integer> parentheses = get_parentheses(f);
+        for(int i = 0; i < f.length(); i++){
+            if(f.charAt(i) == '+' || f.charAt(i) == '-' || f.charAt(i) == '/'){
+                boolean check = true;
+                for(Map.Entry<Integer,Integer> entry : parentheses.entrySet()){
+                    if(i > entry.getKey() && i < entry.getValue()){
+                        check = false;
+                        break;
+                    }
+                }
+                if(check)
+                    return true; 
+            }
+        }
+    
+        return false;
+        
+    }
+    
+    public boolean hasConstantMultiple(String f){
+        
+        if(f.length() > 1)
+            return Character.isDigit(f.charAt(0)) && f.charAt(1) != '^';
+        else
+            return false;
+    }
+    
+    public boolean hasParentheseMultiple(String f){
+        
+        for(int i = 0; i < f.length() - 1; i++){
+            if(f.charAt(i)==')' && f.charAt(i+1)=='(' || f.charAt(i) == ')' && 
+              (f.charAt(i+1) != ')' && f.charAt(i+1) != '^'))
+                return true;
+        }
+        
+        return false;
+        
+    }
+    
+    public Token explicitTokenize(String f){
+        HashMap<Integer,Integer> parentheses = get_parentheses(f);
+        for(int i = 0; i < f.length(); i++){
+            if(f.charAt(i) == '+' || f.charAt(i) == '-' || f.charAt(i) == '/'){
+                boolean check = true;
+                for(Map.Entry<Integer,Integer> entry : parentheses.entrySet()){
+                    if(i > entry.getKey() && i < entry.getValue()){
+                        check = false;
+                        break;
+                    }
+                }
+                if(check){
+                    String a = f.substring(0,i);
+                    String b = f.substring(i+1,f.length());
+                    switch(f.charAt(i)){
+                        case '+':
+                            return new Token(a,b,"+");
+                        case '-':
+                            return new Token(a,b,"-");
+                        case '/':
+                            return new Token(a,b,"/");
+                    }
+                }    
+            }
+
+        }
+        
+        return null;
+        
+    }
+    
+    public Token constMultTokenize(String f){
+        
+        int i = 0;
+        while(i < f.length() && Character.isDigit(f.charAt(i)))
+            i++;
+        String a = f.substring(0,i);
+        String b = f.substring(i,f.length());
+        return new Token(a,b,"*");
+    
+    }
+    
+    public Token parentheseTokenize(String f){
+        
+        int index = 0;
+        
+        for(int i = 0; i < f.length() - 1; i++){
+            if(f.charAt(i) == ')' && f.charAt(i + 1) == '(' || 
+               f.charAt(i) == ')' && (f.charAt(i+1) != ')' && 
+               f.charAt(i+1) != '^')){
+                index = i + 1;
+                break; 
+            }
+        }
+        
+        String a = f.substring(0, index);
+        String b = f.substring(index, f.length());
+        
+        return new Token(a,b,"*"); 
         
     }
     
@@ -413,9 +484,6 @@ public class Parse_Tree extends Binary_Tree<Token>{
                             }
                             start--;
                         }
-                        //while(sub_function.charAt(start) != '('){
-                         //   start--;
-                        //}
                         left = sub_function.substring(start+2, end);
                         j = i + 1;
                     }

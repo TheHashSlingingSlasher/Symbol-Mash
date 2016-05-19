@@ -1,6 +1,3 @@
-/*
- * Parse Tree Class
- */
 package Calculus.Differential;
 
 // Import libraries
@@ -10,38 +7,18 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
+import Data_Structures.Pair.*;
+
 public class Parse_Tree extends Binary_Tree<Token>{
 
-    public HashSet<String> elementaries;
     public Derivative f_prime;
+    public static LookUpTable lookUpTable;
     
     public Parse_Tree(String f){
         super(new Token());
         f_prime = new Derivative();
-        elementaries = fill_elementaries();
+        lookUpTable = new LookUpTable();
         f_prime.f_prime = fill_tree(f);
-        
-    }
-    
-    public HashSet fill_elementaries(){
-        
-        HashSet<String> elementarie = new HashSet();
-        elementarie.add("sin");
-        elementarie.add("cos");
-        elementarie.add("tan");
-        elementarie.add("csc");
-        elementarie.add("sec");
-        elementarie.add("cot");
-        elementarie.add("arcsin");
-        elementarie.add("arccos");
-        elementarie.add("arctan");
-        elementarie.add("ln");
-        elementarie.add("log");
-        elementarie.add("x^n");
-        elementarie.add("a^x");
-        elementarie.add("e^x");
-        
-        return elementarie;
         
     }
     
@@ -75,7 +52,7 @@ public class Parse_Tree extends Binary_Tree<Token>{
                           this_node.get_operand_1());    
         }
         else if(this_node.get_operand_1() == null &&
-            elementaries.contains(this_node.get_operator())){
+            lookUpTable.contains(this_node.get_operator())){
             this.set_tree(new Token(f),null,null);
             f_prime.f_prime = f_prime.derive(this_node.get_operator(),
                           f_prime.get_argument(this_node.get_operand_2()), "x");
@@ -129,7 +106,6 @@ public class Parse_Tree extends Binary_Tree<Token>{
     public Token parse(String f){
         
         f = clean(f);
-        Token parsed_string = null;
         
         if(isReducible(f))
             return expressionToken(f);
@@ -137,11 +113,9 @@ public class Parse_Tree extends Binary_Tree<Token>{
         if(isConstant(f) || isSingleVar(f))
             return singleTermToken(f);
         
-        if(parsed_string == null)
-            parsed_string = singleFunctionToken(f);
+        else
+            return singleFunctionToken(f);
              
-        return parsed_string;
-    
     }
     
     /**
@@ -281,7 +255,7 @@ public class Parse_Tree extends Binary_Tree<Token>{
             return parentheseMultSplice(f);
 
         else
-            return null;
+            return new Token();
         
     }
     
@@ -446,65 +420,82 @@ public class Parse_Tree extends Binary_Tree<Token>{
      */
     public Token singleFunctionToken(String f){
         
-        // Declare a new Token object and a string to hold the substrings of f
-        Token parsed_string = new Token();
-        
-        // Run through the string while creating substrings and checking them
-        // against the HashSet of elementary functions
         for(int i = 0; i < f.length(); i++){
             String sub_function = f.substring(0, i + 1); 
-            if(elementaries.contains(sub_function)){
-                int j = i + 2;
-                while(f.charAt(j) != ')')
-                    j++;
-                return new Token(null, f, sub_function);
-            }
-            if(sub_function.charAt(i) == '^'){
-                String left = "";
-                int end = i - 1;
-                int start = i - 1;
-                int j = 0;
-                if(start >= 0 && sub_function.charAt(start)==')'){
-                    start--;
-                    int count = 1;
-                    while(count > 0){
-                        if(sub_function.charAt(start) == ')'){
-                            count++;
-                        }
-                        if(sub_function.charAt(start) == '('){
-                            count--;
-                        }
-                        start--;
-                    }
-                    left = sub_function.substring(start+2, end);
-                    j = i + 1;
-                }
-                else{
-                    start = i;
-                    end = i;
-                    while(start > 0 && Character.isLetter(sub_function.charAt(start))){
-                        start--;
-                    }
-                    left = sub_function.substring(start,end);
-                    j = i + 1;
-                }
-                while(f.charAt(j) != ')'){
-                    sub_function += f.charAt(j);
-                    j++;
-                }
-                sub_function += f.charAt(j);
-                String right = "";
-                start = i + 2;
-                end = i + 2;
-                while(sub_function.charAt(end) != ')'){
-                    end++;
-                }
-                right = sub_function.substring(start,end);
-                return new Token(left, right, "x^n");
-            }
+            
+            if(isLogOrTrig(sub_function))
+                return makeLogOrTrig(f, sub_function); 
+            
+            if(isExpOrPower(sub_function, i))
+                return makeExpOrPower(f, sub_function, i);
+            
         }
         
-        return null;
+        return new Token();
+        
+    }
+    
+    public boolean isLogOrTrig(String str) {
+        
+        return lookUpTable.contains(str);
+        
+    }
+    
+    public Token makeLogOrTrig(String f, String sub_function){
+        
+        return new Token(null, f, sub_function);
+        
+    }
+    
+    public boolean isExpOrPower(String str, int index){
+        
+        return str.charAt(index) == '^';
+        
+    }
+    
+    public Token makeExpOrPower(String f, String sub_function, int i){
+        
+        String left = "";
+        int end = i - 1;
+        int start = i - 1;
+        int j = 0;
+        if(start >= 0 && sub_function.charAt(start)==')'){
+            start--;
+            int count = 1;
+            while(count > 0){
+                if(sub_function.charAt(start) == ')'){
+                    count++;
+                }
+                if(sub_function.charAt(start) == '('){
+                    count--;
+                }
+                start--;
+            }
+            left = sub_function.substring(start+2, end);
+            j = i + 1;
+        }
+        else{
+            start = i;
+            end = i;
+            while(start > 0 && Character.isLetter(sub_function.charAt(start))){
+                start--;
+            }
+            left = sub_function.substring(start,end);
+            j = i + 1;
+        }
+        while(f.charAt(j) != ')'){
+            sub_function += f.charAt(j);
+            j++;
+        }
+        sub_function += f.charAt(j);
+        String right = "";
+        start = i + 2;
+        end = i + 2;
+        while(sub_function.charAt(end) != ')'){
+            end++;
+        }
+        right = sub_function.substring(start,end);
+        return new Token(left, right, "x^n");
         
     }
     

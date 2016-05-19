@@ -1,13 +1,11 @@
 package Calculus.Differential;
 
-// Import libraries
-import Data_Structures.Tree.Binary_Tree;
+// Java libraries
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-
-import Data_Structures.Pair.*;
+// Custom libraries
+import Data_Structures.Tree.Binary_Tree;
 
 public class Parse_Tree extends Binary_Tree<Token>{
 
@@ -96,25 +94,29 @@ public class Parse_Tree extends Binary_Tree<Token>{
         return f_prime.f_prime;
     
     }
+    
     /**
-     * Takes a string of a function and finds the innermost operator or function
-     * and creates an array of size 3 with the left and right operand as well as 
-     * the binary operator or a function with its argument and a null element.
-     * @param f String representing a mathematical function
-     * @return Array containing operands and operator or an argument and function
+     * @breif Takes a string representing a mathematical expression and attempts
+     *        to reduce it to either a constant, single variable, or a single
+     *        function. What is meant by "single function" is a function that is
+     *        not a sum, difference, product, or quotient of functions. A
+     *        composite function is considered a single function.
+     * @param expression String representing a mathematical expression
+     * @return A Token object with the reduced expression
      */
-    public Token parse(String f){
+    public Token parse(String expression){
         
-        f = clean(f);
-        
-        if(isReducible(f))
-            return expressionToken(f);
-        
-        if(isConstant(f) || isSingleVar(f))
-            return singleTermToken(f);
-        
+        // Remove redundant spaces, parentheses, ect.
+        expression = clean(expression);
+        // Check if the expression is a sum, difference, product, or quotient
+        if(isReducible(expression))
+            return expressionToken(expression);
+        // Check if the expression is a single constant or variable
+        if(isConstant(expression) || isSingleVar(expression))
+            return singleTermToken(expression);
+        // If above two cases are false, expression must be a single function
         else
-            return singleFunctionToken(f);
+            return singleFunctionToken(expression);
              
     }
     
@@ -150,41 +152,6 @@ public class Parse_Tree extends Binary_Tree<Token>{
         }
         
         return cleaned_string;
-        
-    }
-    
-    /**
-     * 
-     * @param f
-     * @return 
-     */
-    public String simplify(String f){
-        
-        if(f.length() > 1){
-             for(int i = 0; i < f.length() ; i++ ){
-                if(f.charAt(i) == '0'){
-                    int index = i+1;
-                    while(!(f.charAt(index)==')' || f.charAt(index)=='+' ||
-                                                  f.charAt(index)=='-') ||
-                                                  isConstant("" + f.charAt(index))){
-                        index++;
-                    }
-                    String a = f.substring(0,i);
-                    String b = f.substring(index+1,f.length());
-                    f = a + b;
-                }
-                if(f.length() > i + 1){
-                    if(f.charAt(i) == '1' && f.charAt(i+1) == '('){
-                    int index = i+1;
-                    String a = f.substring(0,i);
-                    String b = f.substring(i + 1,f.length());
-                    f = a + b;
-                    }
-                } 
-            }   
-        }
-         
-        return f;
         
     }
     
@@ -239,69 +206,107 @@ public class Parse_Tree extends Binary_Tree<Token>{
     }
     
     /**
-     * 
-     * @param f
-     * @return 
+     * @breif Determines whether or not the expression is a sum, difference,
+     *        product, or quotient of functions. If so we call it reducible.
+     * @param expression A string representing a mathematical expression
+     * @return True if the function is reducible, false otherwise
      */
-    public Token expressionToken(String f){
-
-        if(hasExplicitOperator(f))
-            return explicitOperatorSplice(f);
-
-        if(hasConstantMultiple(f))
-            return constMultSplice(f);
-
-        if(hasParentheseMultiple(f))
-            return parentheseMultSplice(f);
-
-        else
-            return new Token();
+    public boolean isReducible(String expression){
+        
+        // Check if expression has explicit or implicit arithmetic operators
+        return hasExplicitOperator(expression) || 
+               hasConstantMultiple(expression) ||
+               hasParentheseMultiple(expression);
         
     }
     
-    public boolean isReducible(String f){
+    /**
+     * @breif Determines whether or not the expression explicitly contains an
+     *        arithmetic operator.
+     * @param expression A string representing a mathematical function
+     * @return True if expression contains an operator outside of any 
+     *         parentheses, false otherwise.
+     */
+    public boolean hasExplicitOperator(String expression){
         
-        return hasExplicitOperator(f) || hasConstantMultiple(f) ||
-               hasParentheseMultiple(f);
-        
-    }
-    
-    public boolean hasExplicitOperator(String f){
-        
-        HashMap<Integer,Integer> parentheses = get_parentheses(f);
-        for(int i = 0; i < f.length(); i++){
-            if(f.charAt(i) == '+' || f.charAt(i) == '-' || f.charAt(i) == '/'){
-                boolean check = true;
-                for(Map.Entry<Integer,Integer> entry : parentheses.entrySet()){
-                    if(i > entry.getKey() && i < entry.getValue()){
-                        check = false;
-                        break;
-                    }
-                }
-                if(check)
-                    return true; 
-            }
+        for(int i = 0; i < expression.length(); i++){
+            if(isArithmeticOperator(expression, i) && 
+               isOutsideParentheses(expression, i))
+                    return true;
+      
         }
     
         return false;
         
     }
     
-    public boolean hasConstantMultiple(String f){
+    /**
+     * @breif Determines whether a character at some index of a string
+     *        representing a mathematical expression is an arithmetic operator
+     * @param expression A string representing a mathematical expression
+     * @param index The index of the string to examine
+     * @return True if the character is an arithmetic operator, false otherwise
+     */
+    public boolean isArithmeticOperator(String expression, int index) {
         
-        if(f.length() > 1)
-            return Character.isDigit(f.charAt(0)) && f.charAt(1) != '^';
+        return expression.charAt(index) == '+' || 
+               expression.charAt(index) == '-' || 
+               expression.charAt(index) == '/';
+        
+    }
+    
+    /**
+     * @breif Determines whether a given index is outside any parentheses in
+     *        a mathematical expression
+     * @param expression A string representing a mathematical expression
+     * @param index The index of the string to examine
+     * @return True if index is outside of parentheses, false otherwise
+     */
+    public boolean isOutsideParentheses(String expression, int index) {
+        
+        // Retrieve the set of indeces of corresponding parentheses
+        HashMap<Integer,Integer> parentheses = get_parentheses(expression);
+        // Check index against the set of indeces to see if it is inside any
+        for(Map.Entry<Integer,Integer> entry : parentheses.entrySet()){
+            // If the index is inside parentheses return false
+            if(index > entry.getKey() && index < entry.getValue())
+                return false;
+        }
+        
+        return true;
+        
+    }
+    
+    /**
+     * @breif Determines whether or not an expression possesses a constant
+     *        multiplier.
+     * @param expression A String representing a mathematical expression.
+     * @return True if expression contains constant multiplier, false otherwise.
+     */
+    public boolean hasConstantMultiple(String expression){
+        
+        if(expression.length() > 1)
+            return Character.isDigit(expression.charAt(0)) && 
+                   expression.charAt(1) != '^';
         else
             return false;
         
     }
     
-    public boolean hasParentheseMultiple(String f){
+    /**
+     * @breif Determines whether or not an expression possesses an implicit
+     *        multiplication operator ie sin(x)cos(x).
+     * @param expression A String representing a mathematical expression.
+     * @return True if expression contains implicit multiplication operator
+     *         false otherwise.
+     */
+    public boolean hasParentheseMultiple(String expression){
         
-        for(int i = 0; i < f.length() - 1; i++){
-            if(f.charAt(i) == ')' && f.charAt(i + 1) == '(' || 
-               f.charAt(i) == ')' && 
-              (f.charAt(i + 1) != ')' && f.charAt(i + 1) != '^'))
+        for(int i = 0; i < expression.length() - 1; i++){
+            if(expression.charAt(i) == ')' && expression.charAt(i + 1) == '(' || 
+               expression.charAt(i) == ')' && 
+              (expression.charAt(i + 1) != ')' && 
+               expression.charAt(i + 1) != '^'))
                 return true;
         }
         
@@ -309,135 +314,177 @@ public class Parse_Tree extends Binary_Tree<Token>{
         
     }
     
-    public Token explicitOperatorSplice(String f){
-        HashMap<Integer,Integer> parentheses = get_parentheses(f);
-        for(int i = 0; i < f.length(); i++){
-            if(f.charAt(i) == '+' || f.charAt(i) == '-' || f.charAt(i) == '/'){
-                boolean check = true;
-                for(Map.Entry<Integer,Integer> entry : parentheses.entrySet()){
-                    if(i > entry.getKey() && i < entry.getValue()){
-                        check = false;
-                        break;
-                    }
-                }
-                if(check){
-                    String a = f.substring(0,i);
-                    String b = f.substring(i+1,f.length());
-                    switch(f.charAt(i)){
-                        case '+':
-                            return new Token(a,b,"+");
-                        case '-':
-                            return new Token(a,b,"-");
-                        case '/':
-                            return new Token(a,b,"/");
-                    }
-                }    
-            }
+    /**
+     * @breif Creates a Token object by splitting the expression into two 
+     *        smaller expressions          
+     * @param expression A string representing a mathematical expression
+     * @return A Token object that stores the smaller expressions and the 
+     *         operator that connects them
+     */
+    public Token expressionToken(String expression){
 
-        }
-        
-        return null;
+        if(hasExplicitOperator(expression))
+            return explicitOperatorSplice(expression);
+
+        if(hasConstantMultiple(expression))
+            return constMultSplice(expression);
+
+        else
+            return parentheseMultSplice(expression);
         
     }
     
-    public Token constMultSplice(String f){
+    /**
+     * @breif Creates a Token object by splitting the expression into two 
+     *        smaller expressions by finding a character representing an
+     *        arithmetic operator that joins the two smaller expressions.
+     * @param expression A string representing a mathematical expression
+     * @return A Token object that stores the smaller expressions and the 
+     *         operator that connects them
+     */
+    public Token explicitOperatorSplice(String expression){
+
+        for(int i = 0; i < expression.length(); i++){
+            if(isArithmeticOperator(expression, i) &&
+               isOutsideParentheses(expression, i)){
+
+                String lValue = expression.substring(0, i);
+                String rValue = expression.substring(i + 1, expression.length());
+                String operator = Character.toString(expression.charAt(i));
+                return new Token(lValue, rValue, operator);
+
+            }
+        }
+
+        return new Token(); // Program never reaches this point
+
+    }
+    
+    /**
+     * @breif Creates a Token object by splitting the expression into two
+     *        smaller expression where one of the expressions is a constant
+     *        multiplier
+     * @param expression A string representing a mathematical expression
+     * @return A Token object that stores the constant multiplier, other 
+     *         expression, and a multiplication operator
+     */
+    public Token constMultSplice(String expression){
         
         int i = 0;
-        while(i < f.length() && Character.isDigit(f.charAt(i)))
+        while(i < expression.length() && 
+              Character.isDigit(expression.charAt(i)))
             i++;
-        String a = f.substring(0,i);
-        String b = f.substring(i,f.length());
-        return new Token(a,b,"*");
+        
+        String lValue = expression.substring(0, i);
+        String rValue = expression.substring(i, expression.length());
+        
+        return new Token(lValue, rValue, "*");
     
     }
     
-    public Token parentheseMultSplice(String f){
+    /**
+     * @breif Creates a Token object by splitting the expression into two
+     *        smaller expressions where the two smaller expressions are
+     *        separated by an implicit multiplication operator ie sin(x)cos(x)
+     * @param expression A string representing a mathematical expression
+     * @return A Token object that stores the smaller expressions and a 
+     *         multiplication operator
+     */
+    public Token parentheseMultSplice(String expression){
         
         int index = 0;
         
-        for(int i = 0; i < f.length() - 1; i++){
-            if(f.charAt(i) == ')' && f.charAt(i + 1) == '(' || 
-               f.charAt(i) == ')' && (f.charAt(i+1) != ')' && 
-               f.charAt(i+1) != '^')){
+        for(int i = 0; i < expression.length() - 1; i++){
+            if(expression.charAt(i) == ')' && expression.charAt(i + 1) == '(' || 
+               expression.charAt(i) == ')' && (expression.charAt(i+1) != ')' && 
+               expression.charAt(i+1) != '^')){
                 index = i + 1;
                 break; 
             }
         }
         
-        String a = f.substring(0, index);
-        String b = f.substring(index, f.length());
+        String lValue = expression.substring(0, index);
+        String rValue = expression.substring(index, expression.length());
         
-        return new Token(a,b,"*"); 
+        return new Token(lValue, rValue, "*"); 
         
     }
     
     /**
-     * Checks to see if a given function has been reduced to a single term.
-     * The single term may be either a constant or an isolated variable. If the
-     * function is a single term, a new Token object is created and returned.
-     * @param f The function f(x)
-     * @return  A new Token object with operand_1 and operator set to null, and
-     *          operand_2 set to the string f
+     * @brief Determines whether or not a given expression is a constant
+     *        function
+     * @param expression A string representing a mathematical expression
+     * @return True if the expression is a constant function, false otherwise
      */
-    public Token singleTermToken(String f){
-       
-        return new Token(null,f,null);
- 
-    }
-    
-        /**
-     * Determines whether a given function is a constant function
-     * @param f The function f(x)
-     * @return True if the function is constant, false otherwise
-     */
-    public boolean isConstant(String f){
+    public boolean isConstant(String expression){
         
-        // Check to see if there are any non-digits in the string, if so the 
-        // function is not constant
-        for(int i = 0;i < f.length(); i++){
-            if(!Character.isDigit(f.charAt(i))){
+        for(int i = 0; i < expression.length(); i++){
+            if(!Character.isDigit(expression.charAt(i)))
                 return false;
-            }
         }
         
         return true;
         
     }
     
-    public boolean isSingleVar(String f){
+    /**
+     * @breif Determines whether or not a given expression is a single variable.
+     * @param expression A string representing a mathematical expression
+     * @return True if the expression is a single variable, false otherwise
+     */
+    public boolean isSingleVar(String expression){
         
-        return f.equals("x");
+        return expression.equals("x");
+        
+    }
+
+    /**
+     * @breif Creates a Token object representing a single term. What is meant
+     *        by "single term" is either a constant function or single variable.
+     * @param expression A string representing a mathematical expression
+     * @return A Token object that stores the single term, but not a second
+     *         expression or operator
+     */
+    public Token singleTermToken(String expression){
+       
+        return new Token(null, expression, null);
+ 
+    }
+    
+    /**
+     * @breif Creates a Token object representing a single function. What is 
+     *        meant by "single function" is a function that is not a sum, 
+     *        difference, product, or quotient of functions. A composite 
+     *        function is considered a single function.
+     * @param expression A string representing a mathematical expression
+     * @return A Token object that stores the single function, but not a second
+     *         expression or operator
+     */
+    public Token singleFunctionToken(String expression){
+        
+        for(int i = 0; i < expression.length(); i++){
+            String sub_function = expression.substring(0, i + 1); 
+            
+            if(isLogOrTrig(sub_function))
+                return makeLogOrTrig(expression, sub_function); 
+            
+            if(isExpOrPower(sub_function, i))
+                return makeExpOrPower(expression, sub_function, i);
+            
+        }
+        
+        return new Token(); // Program never reaches this point
         
     }
     
     /**
-     * Checks to see if a given function is an elementary function that has been
-     * isolated. If so a new Token is created with operand_1 set to null,
-     * operand_2 set to the String f, and operator set to the given function
-     * with no arguments
-     * @param f The function f(x) to examine
-     * @return A new Token object if a single function, null otherwise
+     * @breif Determines whether the expression is a log or trig function.
+     * @param expression A string representing a mathematical expression
+     * @return True if the expression is a trig or log function, false otherwise
      */
-    public Token singleFunctionToken(String f){
+    public boolean isLogOrTrig(String expression) {
         
-        for(int i = 0; i < f.length(); i++){
-            String sub_function = f.substring(0, i + 1); 
-            
-            if(isLogOrTrig(sub_function))
-                return makeLogOrTrig(f, sub_function); 
-            
-            if(isExpOrPower(sub_function, i))
-                return makeExpOrPower(f, sub_function, i);
-            
-        }
-        
-        return new Token();
-        
-    }
-    
-    public boolean isLogOrTrig(String str) {
-        
-        return lookUpTable.contains(str);
+        return lookUpTable.contains(expression);
         
     }
     
@@ -496,6 +543,41 @@ public class Parse_Tree extends Binary_Tree<Token>{
         }
         right = sub_function.substring(start,end);
         return new Token(left, right, "x^n");
+        
+    }
+    
+    /**
+     * 
+     * @param f
+     * @return 
+     */
+    public String simplify(String f){
+        
+        if(f.length() > 1){
+             for(int i = 0; i < f.length() ; i++ ){
+                if(f.charAt(i) == '0'){
+                    int index = i+1;
+                    while(!(f.charAt(index)==')' || f.charAt(index)=='+' ||
+                                                  f.charAt(index)=='-') ||
+                                                  isConstant("" + f.charAt(index))){
+                        index++;
+                    }
+                    String a = f.substring(0,i);
+                    String b = f.substring(index+1,f.length());
+                    f = a + b;
+                }
+                if(f.length() > i + 1){
+                    if(f.charAt(i) == '1' && f.charAt(i+1) == '('){
+                    int index = i+1;
+                    String a = f.substring(0,i);
+                    String b = f.substring(i + 1,f.length());
+                    f = a + b;
+                    }
+                } 
+            }   
+        }
+         
+        return f;
         
     }
     

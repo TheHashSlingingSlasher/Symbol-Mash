@@ -1,12 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Calculus.Differential;
 
 import java.util.HashMap;
-import java.util.Arrays;
 import Data_Structures.Pair.*;
 /**
  *
@@ -18,6 +12,11 @@ public final class LookUpTable {
     
     public LookUpTable() {
         table = new HashMap();
+        table.put("ln", new Pair("1/x", "xln(x)-ln(x)"));
+        table.put("log", new Pair("log(a,x)(1/x)", "log(a,x)/x"));       
+        table.put("e^x", new Pair("e^(x)", "e^(x)"));
+        table.put("a^x", new Pair("cos", "-cos"));
+        table.put("x^n", new Pair("cos", "-cos"));
         table.put("sin", new Pair("cos(x)", "-cos(x)"));
         table.put("cos", new Pair("-sin(x)", "sin(x)"));
         table.put("tan", new Pair("(sec(x))^(2)", "ln(sec(x))"));
@@ -27,9 +26,9 @@ public final class LookUpTable {
         table.put("arcsin", new Pair("1/(1+x^(2))", "-cos"));
         table.put("arccos", new Pair("cos", "-cos"));
         table.put("arctan", new Pair("cos", "-cos"));
-        table.put("e^x", new Pair("cos", "-cos"));
-        table.put("a^x", new Pair("cos", "-cos"));
-        table.put("x^n", new Pair("cos", "-cos"));
+        table.put("sinh", new Pair("cosh", "cosh"));
+        table.put("cosh", new Pair("sinh", "sinh"));
+        
     }
     
     public boolean contains(String str) {

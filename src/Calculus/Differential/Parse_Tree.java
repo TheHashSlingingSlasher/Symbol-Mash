@@ -101,8 +101,8 @@ public class Parse_Tree extends Binary_Tree<Token>{
      *        function. What is meant by "single function" is a function that is
      *        not a sum, difference, product, or quotient of functions. A
      *        composite function is considered a single function.
-     * @param expression String representing a mathematical expression
-     * @return A Token object with the reduced expression
+     * @param expression String representing a mathematical expression.
+     * @return A Token object with the reduced expression.
      */
     public Token parse(String expression){
         
@@ -121,16 +121,19 @@ public class Parse_Tree extends Binary_Tree<Token>{
     }
     
     /**
-     * 
-     * @param f
-     * @return 
+     * @breif Removes redundant characters from the expression.
+     *        WARNING: Code unfinished, will return after clean-up work
+     * @param expression A string representing a mathematical expression
+     * @return A string of the above expression without redundant characters or
+     *         spaces
      */
-    public String clean(String f){
+    public String clean(String expression){
         
-        String cleaned_string = f;
+        String cleaned_string = expression;
         
-        if(f != null && !f.contains("^") && !f.equals("")){
-            HashMap<Integer,Integer> parentheses = get_parentheses(f);
+        if(expression != null && !expression.contains("^") && 
+          !expression.equals("")){
+            HashMap<Integer,Integer> parentheses = getParentheses(expression);
             while(cleaned_string.charAt(0) == '(' && parentheses.size() > 0 &&
               cleaned_string.charAt(cleaned_string.length()-1) == ')'){
                 if(parentheses.get(0) == cleaned_string.length()-1){
@@ -156,27 +159,25 @@ public class Parse_Tree extends Binary_Tree<Token>{
     }
     
     /**
-     * Finds all ordered pairs representing the indeces of an opening parentheses
-     * and its corresponding closing parentheses.
-     * @param f The string representing the function f(x)
-     * @return A HashMap<Integer,Integer> of the indeces of parentheses pairs
+     * @brief Creates a HashMap filled with pairs of indeces corresponding to
+     *        an opening parentheses and its associated closing parentheses.
+     * @param expression The string representing a mathematical expression
+     * @return A HashMap containing the indeces of parentheses pairs
      */
-    public HashMap get_parentheses(String f){
+    public HashMap getParentheses(String expression){
         
         HashMap<Integer,Integer> parentheses = new HashMap();
         
-        if(f != null && num_parentheses(f) % 2 == 0){
-            for(int i=0;i<f.length()-1;i++){
-                if(f.charAt(i)=='('){
+        if(expression != null && numParentheses(expression) % 2 == 0){
+            for(int i = 0; i < expression.length() - 1; i++){
+                if(expression.charAt(i) == '('){
                     int j = i + 1;
                     int count = 1;
                     while(count!=0){
-                        if(f.charAt(j)=='('){
+                        if(expression.charAt(j)=='(')
                             count++;
-                        }
-                        if(f.charAt(j)==')'){
+                        if(expression.charAt(j)==')')
                             count--;
-                        }
                         j++;
                     }
                     parentheses.put(i,j-1);
@@ -189,15 +190,15 @@ public class Parse_Tree extends Binary_Tree<Token>{
     }
     
     /**
-     * 
-     * @param f
-     * @return 
+     * @breif Counts the number of parentheses in an expression
+     * @param expression A string representing a mathematical expression
+     * @return The number of parentheses in the expression
      */
-    public static int num_parentheses(String f){
+    public static int numParentheses(String expression){
         
         int count = 0;
-        for(int i=0;i<f.length();i++){
-            if(f.charAt(i) == '(' || f.charAt(i) == ')')
+        for(int i = 0; i < expression.length(); i++){
+            if(expression.charAt(i) == '(' || expression.charAt(i) == ')')
                 count++;
         }
         
@@ -265,7 +266,7 @@ public class Parse_Tree extends Binary_Tree<Token>{
     public boolean isOutsideParentheses(String expression, int index) {
         
         // Retrieve the set of indeces of corresponding parentheses
-        HashMap<Integer,Integer> parentheses = get_parentheses(expression);
+        HashMap<Integer,Integer> parentheses = getParentheses(expression);
         // Check index against the set of indeces to see if it is inside any
         for(Map.Entry<Integer,Integer> entry : parentheses.entrySet()){
             // If the index is inside parentheses return false
@@ -488,121 +489,243 @@ public class Parse_Tree extends Binary_Tree<Token>{
         
     }
     
-    public Token makeLogOrTrig(String f, String sub_function){
+    /**
+     * @breif Creates a Token object of either a log or trig function.
+     * @param expression A string representing a mathematical expression.
+     * @param expressionSubstring A substring of the above expression.
+     * @return A Token object where the "operator" is a log or trig function.
+     */
+    public Token makeLogOrTrig(String expression, String expressionSubstring){
         
-        return new Token(null, f, sub_function);
-        
-    }
-    
-    public boolean isExpOrPower(String str, int index){
-        
-        return str.charAt(index) == '^';
-        
-    }
-    
-    public Token makeExpOrPower(String f, String sub_function, int i){
-        
-        String left = "";
-        int end = i - 1;
-        int start = i - 1;
-        int j = 0;
-        if(start >= 0 && sub_function.charAt(start)==')'){
-            start--;
-            int count = 1;
-            while(count > 0){
-                if(sub_function.charAt(start) == ')'){
-                    count++;
-                }
-                if(sub_function.charAt(start) == '('){
-                    count--;
-                }
-                start--;
-            }
-            left = sub_function.substring(start+2, end);
-            j = i + 1;
-        }
-        else{
-            start = i;
-            end = i;
-            while(start > 0 && Character.isLetter(sub_function.charAt(start))){
-                start--;
-            }
-            left = sub_function.substring(start,end);
-            j = i + 1;
-        }
-        while(f.charAt(j) != ')'){
-            sub_function += f.charAt(j);
-            j++;
-        }
-        sub_function += f.charAt(j);
-        String right = "";
-        start = i + 2;
-        end = i + 2;
-        while(sub_function.charAt(end) != ')'){
-            end++;
-        }
-        right = sub_function.substring(start,end);
-        return new Token(left, right, "x^n");
+        return new Token(null, expression, expressionSubstring);
         
     }
     
     /**
-     * 
-     * @param f
+     * @breif Determines whether the expression is an exponential or power
+     *        function.
+     * @param expression A string representing a mathematical expression
+     * @param index The index to search for the exponential character '^'
      * @return 
      */
-    public String simplify(String f){
+    public boolean isExpOrPower(String expression, int index){
         
-        if(f.length() > 1){
-             for(int i = 0; i < f.length() ; i++ ){
-                if(f.charAt(i) == '0'){
-                    int index = i+1;
-                    while(!(f.charAt(index)==')' || f.charAt(index)=='+' ||
-                                                  f.charAt(index)=='-') ||
-                                                  isConstant("" + f.charAt(index))){
+        return expression.charAt(index) == '^';
+        
+    }
+    
+    /**
+     * @breif Creates a Token object of either an exponential or power function.
+     * @param expression A string representing a mathematical expression.
+     * @param expressionSubstring A substring of the above expression.
+     * @param index The index where the '^' character occurs in the expression.
+     * @return A Token Object with one operand and either e^x or x^n as
+     *         the operator
+     */
+    public Token makeExpOrPower(String expression, String expressionSubstring, 
+                                int index){ 
+
+        int start = findBaseStart(expressionSubstring, index - 1);
+        int end = findBaseEnd(expressionSubstring, index);
+        String base = findBase(expressionSubstring, start, end);
+        
+        expressionSubstring = injectArgument(expression, expressionSubstring, 
+                                            index + 1);
+        start = findExponentStart(index);
+        end = findExponentEnd(expressionSubstring, start);
+        String exponent = findExponent(expressionSubstring, start, end);
+        
+        String tag = base.equals("e") ? "e^x" : "x^n";
+        
+        return new Token(base, exponent, tag);
+        
+    }
+    
+    /**
+     * @breif Finds the starting index of the base of either an exponential or
+     *        power function.
+     * @param expressionSubstring A substring of the above expression.
+     * @param start The index to begin searching from.
+     * @return The starting index of the base of the appropriate function.
+     */
+    public int findBaseStart(String expressionSubstring, int start) {
+        
+        if(start >= 0 && expressionSubstring.charAt(start)==')'){
+            start--;
+            int count = 1;
+            while(count > 0){
+                if(expressionSubstring.charAt(start) == ')')
+                    count++;
+                if(expressionSubstring.charAt(start) == '(')
+                    count--;
+                start--;
+            }
+            start += 2;
+        }
+        
+        else{
+            while(start > 0 && Character.isLetter(
+                                         expressionSubstring.charAt(start)))
+                start--;
+        }
+        
+        return start;
+        
+    }
+    
+    /**
+     * @breif Finds the ending index of the base of either an exponential or
+     *        power function.
+     * @param expressionSubstring A substring of the above expression.
+     * @param end The index to begin searching from
+     * @return The ending index of the base of the appropriate function.
+     */
+    public int findBaseEnd(String expressionSubstring, int end) {
+        
+        return (end >= 0 && expressionSubstring.charAt(end) == ')') ? end - 1 :
+                                                                    end;
+         
+    }
+    
+    /**
+     * @breif Retrieves the base of either an exponential or power function.
+     * @param expressionSubstring A substring of the above expression.
+     * @param start The start of the part of the string to splice.
+     * @param end The end of the part of the string to splice.
+     * @return A string representing the base of the appropriate function.
+     */
+    public String findBase(String expressionSubstring, int start, int end) {
+        
+        return expressionSubstring.substring(start, end);
+        
+    }
+    
+    /**
+     * @breif Finds the starting index of the exponent of either an 
+     *        exponential or power function.
+     * @param index The index where the '^' character occurs.
+     * @return The starting index of the exponent of the appropriate function.
+     */
+    public int findExponentStart(int index) {
+        
+        return index + 1;
+        
+    }
+    
+    /**
+     * @breif Finds the ending index of the exponent of either an exponential or
+     *        power function.
+     * @param expressionSubstring A substring of the main expression.
+     * @param index The index where the '^' character occurs.
+     * @return The ending index of the exponent of the appropriate function.
+     */    
+    public int findExponentEnd(String expressionSubstring, int index) {
+        
+        while(expressionSubstring.charAt(index) != ')')
+            index++;
+        
+        return index;
+        
+    }
+    
+    /**
+     * @breif Retrieves the exponent of either an exponential or power function.
+     * @param expressionSubstring A substring of the above expression.
+     * @param start The start of the part of the string to splice.
+     * @param end The end of the part of the string to splice.
+     * @return A string representing the base of the appropriate function.
+     */
+    public String findExponent(String expressionSubstring, int start, int end) {
+        
+        return expressionSubstring.substring(start,end);
+        
+    }
+    
+    /**
+     * @breif Concatenates the argument of the function found in the expression
+     *        string to the expressionSubstring
+     * @param expression A string representing a mathematical expression.
+     * @param expressionSubstring A substring of the above expression.
+     * @param index The index where the '(' character appears.
+     * @return The expressionSubstring with the argument put into the parameter.
+     */
+    public String injectArgument(String expression, String expressionSubstring,
+                                 int index){
+        
+        int j = index + 1;
+        
+        while(expression.charAt(j) != ')'){
+            expressionSubstring += expression.charAt(j);
+            j++;
+        }
+        expressionSubstring += expression.charAt(j);
+        
+        return expressionSubstring;
+        
+    }
+    
+    /**
+     * @breif Simplifies an algebraic expression
+     *        WARNING: Code incomplete, simplify is an involved process that
+     *                 requires some thinking. Will return after clean-up is
+     *                 finished.
+     * @param expression A string representing a mathematical expression
+     * @return A string containing the simplified expression
+     */
+    public String simplify(String expression){
+        
+        if(expression.length() > 1){
+             for(int i = 0; i < expression.length(); i++ ){
+                if(expression.charAt(i) == '0'){
+                    int index = i + 1;
+                    while(!(expression.charAt(index)== ')' || 
+                            expression.charAt(index)=='+' ||
+                            expression.charAt(index)=='-') ||                      
+                            isConstant("" + expression.charAt(index))){
                         index++;
                     }
-                    String a = f.substring(0,i);
-                    String b = f.substring(index+1,f.length());
-                    f = a + b;
+                    String lValue = expression.substring(0, i);
+                    String rValue = expression.substring(index + 1,
+                                    expression.length());
+                    expression = lValue + rValue;
                 }
-                if(f.length() > i + 1){
-                    if(f.charAt(i) == '1' && f.charAt(i+1) == '('){
-                    int index = i+1;
-                    String a = f.substring(0,i);
-                    String b = f.substring(i + 1,f.length());
-                    f = a + b;
+                if(expression.length() > i + 1){
+                    if(expression.charAt(i) == '1' && 
+                       expression.charAt(i + 1) == '('){
+                    int index = i + 1;
+                    String lValue = expression.substring(0, i);
+                    String rValue = expression.substring(i + 1, 
+                                    expression.length());
+                    expression = lValue + rValue;
                     }
                 } 
             }   
         }
          
-        return f;
+        return expression;
         
     }
     
     /**
-     * Encloses a given function in a set of parentheses
-     * @param f The function f(x)
-     * @return  The original string with parentheses added to the beginning and
-     *          to the end.
+     * @expression Encloses an expression in parentheses
+     * @param expression A string representing a mathematical expression
+     * @return  The given expression with parentheses enclosing it.
      */
-    public String enclose(String f){
+    public String enclose(String expression){
         
-        return "(" + f + ")";
+        return "(" + expression + ")";
         
     }
     
     /**
-     * Prints the nodes of the tree in the order determined by the iterator 
-     * passed into the parameter order. The iterator my contain a traversal
-     * in preorder, postorder, inorder, or level order
-     * @param order 
+     * @breif Prints the nodes of the tree given an iterator to that tree .
+     * @param order An iterator pointing to the root of a tree.
      */
     @Override
     public void print(Iterator<Token> order){
         
         Iterator<Token> pointer = order;
+        
         while(pointer.hasNext()){
             Token output = pointer.next();
             System.out.println(output.get_original());

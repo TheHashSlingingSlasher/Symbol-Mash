@@ -1,7 +1,6 @@
 package datastructures.parsetree;
 
 // Java libraries
-import calculus.differential.*;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;

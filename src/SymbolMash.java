@@ -3,7 +3,7 @@
  */
 
 // Import libraries
-import calculus.differential.Derivative;
+import calculus.Derivative;
 import java.util.Scanner;
 //import Calculus.Integral.*;
 

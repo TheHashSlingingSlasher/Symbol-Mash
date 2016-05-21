@@ -1,7 +1,5 @@
 package datastructures.parsetree;
 
-import calculus.differential.*;
-
 /**
  * Class for the Token objects which each node of the Parse_Tree will contain
  * @author Alec

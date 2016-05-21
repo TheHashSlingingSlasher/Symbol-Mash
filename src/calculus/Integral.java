@@ -1,4 +1,4 @@
-package calculus.integral;
+package calculus;
 
 /**
  *

@@ -9,8 +9,8 @@ package terminal;
 // Import libraries
 import linearalgebra.Matrix;
 import vectorfunction.VectorFunction;
-import calculus.integral.Integral;
-import calculus.differential.Derivative;
+import calculus.Integral;
+import calculus.Derivative;
 import datastructures.parsetree.*;
 import java.util.Queue;
 import java.util.LinkedList;

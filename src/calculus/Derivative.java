@@ -1,4 +1,4 @@
-package calculus.differential;
+package calculus;
 
 // Java libraries
 import java.util.HashSet;
@@ -91,7 +91,7 @@ public class Derivative {
      * functions to be used in parsing the expression
      * @return a HashSet containing all the known functions
      */
-    public static HashSet fill_elementaries(){
+    public static HashSet fill_elementaries() {
         
         HashSet<String> elementaries = new HashSet();
         elementaries.add("sin");
@@ -433,7 +433,7 @@ public class Derivative {
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
-            return "1/(1 + (" + x + ")^(2))";
+            return "1/(1+(" + x + ")^(2))";
         }
         
         // Else, apply the chain rule

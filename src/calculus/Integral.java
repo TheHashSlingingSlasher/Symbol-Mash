@@ -31,7 +31,7 @@ public class Integral {
                 return send("single","x","x");
             }
             else if(f.get_operand_2() != null && tree.isConstant(f.get_operand_2())){
-                return send("constant","x","x");
+                return send("constant", "x", f.get_operand_2());
             }
             
         }
@@ -40,7 +40,7 @@ public class Integral {
             return send(f.get_operator(),f.get_operand_2(), f.get_operand_1());    
         }
         else if(f.get_operand_1() == null &&
-            elementaries.contains(f.get_operator())){
+                elementaries.contains(f.get_operator())){
             return send(f.get_operator(),
                           get_argument(f.get_operand_2()), "x");
         }
@@ -91,7 +91,7 @@ public class Integral {
             case "log":
                 return log(x,y);
             case "constant":
-                return constant(x);
+                return constant(x, y);
             case "single":
                 return single(x);
         }
@@ -138,9 +138,9 @@ public class Integral {
      * @param c The constant to differentiate
      * @return  A String containing a single zero
      */
-    public String constant(String c){
-    
-        return c + "x";
+    public String constant(String x, String c){
+        
+        return c + x;
     
     }
     
@@ -200,10 +200,8 @@ public class Integral {
      */
     public String ln(String x){
         
-        // If the function is elementary, return the known derivative
-        //if(x.equals("x")){         
-            return "1/(" + x + ")";
-        //}
+ 
+        return x + "ln(" + x + ")-x";
         
     }
     
@@ -251,10 +249,7 @@ public class Integral {
      */
     public String tan(String x){
         
-        // If the function is elementray, return the known derivative
-        //if(x.equals("x")){
-            return "sec^2(" + x + ")";
-        //}
+        return "ln(sec(" + x + "))";
         
     }
     
@@ -267,7 +262,7 @@ public class Integral {
         
         // If the function is elementary, return the known derivative
         //if(x.equals("x")){
-            return "-csc(" + x + ")" + "cot(" + x + ")";
+            return "ln(csc(" + x + ")" + "-cot(" + x + ")";
         //}
         
     }
@@ -281,7 +276,7 @@ public class Integral {
         
         // If the function is elementary, return the known derivative
        // if(x.equals("x")){
-            return "sec(" + x + ")" + "tan(" + x + ")";
+            return "ln(sec(" + x + ")" + "+tan(" + x + "))";
         //}
         
     }
@@ -293,10 +288,7 @@ public class Integral {
      */
     public String cot(String x){
         
-        // If the function is elementary, return the known derivative
-        //if(x.equals("x")){
-            return "-csc^2(" + x + ")";
-        //}
+        return "ln(sin(" + x + "))";
         
     }
     
@@ -307,10 +299,7 @@ public class Integral {
      */
     public String arcsin(String x){
         
-        // If the function is elementary, return the known derivative
-        //if(x.equals("x")){
-            return "1/(1-" + x + "^(2))^(1/2)";
-        //}
+        return x + "arcsin(" + x + ")+(1-x^(2))^(1/2)";
         
     }
     

@@ -1,31 +1,32 @@
-package noncompositederivative;
+package directantiderivative;
 
+// Java Libraries
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
-
-import calculus.Derivative;
+// Symbol-Mash Libraries
+import calculus.Integral;
 
 /**
  *
  * @author alec
  */
 public class TestCos {
-   
-    String fPrime;
+    
+    String antiderivative;
     
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("cos(x)").fPrime;
+        antiderivative = new Integral("cos(x)").antiderivative;
         
     }
- 
+    
     @Test
     public void testCos() {
         
-        assertEquals("-sin(x)", fPrime);
+        assertEquals("sin(x)", antiderivative);
         
     }
-
+    
 }

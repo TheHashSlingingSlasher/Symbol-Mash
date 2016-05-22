@@ -1,6 +1,6 @@
 package derivative;
 
-import noncompositederivative.NonCompositeDerivativeSuite;
+import derivative.basicnoncomposite.NonCompositeDerivativeSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 

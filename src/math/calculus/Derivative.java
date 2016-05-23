@@ -1,15 +1,17 @@
 package math.calculus;
 
-// Java libraries
+// Symbol-Mash Libraries
 import util.datastructures.parsetree.Token;
 import util.datastructures.parsetree.ParseTree;
-import java.util.HashSet;
+import util.datastructures.functionlookupmap.*;
 
+/**
+ *
+ * @author Alec Farfan
+ */
 public class Derivative {
-    
-    // Fields
+
     public String fPrime;
-    public static HashSet<String> elementaries = fill_elementaries();
     
     /**
      * Constructor of the Derivative class
@@ -24,7 +26,6 @@ public class Derivative {
     public Derivative(String function) {
         
         ParseTree tree = new ParseTree(function);
-        tree.fill_tree(function);
         fPrime = differentiate(tree);
         
     }
@@ -47,7 +48,7 @@ public class Derivative {
             return derive(f.getOperator(),f.getRValue(), f.getLValue());    
         }
         else if(f.getLValue() == null &&
-            elementaries.contains(f.getOperator())){
+            FunctionLookUpMap.contains(f.getOperator())){
             return derive(f.getOperator(),
                           get_argument(f.getRValue()), "x");
         }
@@ -85,33 +86,6 @@ public class Derivative {
 //                                      right_sub.f_prime.f_prime));
 //                    
 //                    break;
-    }
-    
-    /**
-     * Fills up a HashSet of type String with all of the known elementary 
-     * functions to be used in parsing the expression
-     * @return a HashSet containing all the known functions
-     */
-    public static HashSet fill_elementaries() {
-        
-        HashSet<String> elementaries = new HashSet();
-        elementaries.add("sin");
-        elementaries.add("cos");
-        elementaries.add("tan");
-        elementaries.add("csc");
-        elementaries.add("sec");
-        elementaries.add("cot");
-        elementaries.add("arcsin");
-        elementaries.add("arccos");
-        elementaries.add("arctan");
-        elementaries.add("sinh");
-        elementaries.add("cosh");
-        elementaries.add("ln");
-        elementaries.add("log");
-        elementaries.add("^");
-        
-        return elementaries;
-        
     }
     
     /**

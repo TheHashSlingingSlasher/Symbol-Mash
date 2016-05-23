@@ -2,18 +2,16 @@ package util.datastructures.parsetree;
 
 // Java libraries
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 // Custom libraries
 import util.datastructures.tree.BinaryTree;
+import util.datastructures.functionlookupmap.*;
 
 public class ParseTree extends BinaryTree<Token>{
-
-    public static LookUpTable lookUpTable = new LookUpTable();;
     
     public ParseTree(String f){
         super(new Token());
-          fill_tree(f);
+        fill_tree(f);
     }
     
     /**
@@ -21,7 +19,7 @@ public class ParseTree extends BinaryTree<Token>{
      * of the string f is in one of the two base cases
      * @param f
      */
-    public void fill_tree(String f){
+    private void fill_tree(String f){
 
         // Parse the function f(x) and create the Token object for current node
         Token nodeData = parse(f);
@@ -36,12 +34,13 @@ public class ParseTree extends BinaryTree<Token>{
                  nodeData.getRValue(),nodeData.getOperator()),null,null);
         }
         else if(nodeData.getLValue() == null &&
-            lookUpTable.contains(nodeData.getOperator())){
+            FunctionLookUpMap.contains(nodeData.getOperator())){
             this.set_tree(new Token(nodeData.getLValue(),
                     nodeData.getRValue(),nodeData.getOperator()),null,null);
         }
         // Recursive Case: f is a sum, difference, product or quotient of functions
-        else{
+        else if(!(nodeData.getLValue() == null && nodeData.getOperator() 
+                == null)){
             ParseTree left_sub = new ParseTree(nodeData.getLValue());
             ParseTree right_sub = new ParseTree(nodeData.getRValue());
             this.set_tree(new Token(nodeData.getLValue(),
@@ -441,7 +440,7 @@ public class ParseTree extends BinaryTree<Token>{
      */
     public boolean isLogOrTrig(String expression) {
         
-        return lookUpTable.contains(expression);
+        return FunctionLookUpMap.contains(expression);
         
     }
     

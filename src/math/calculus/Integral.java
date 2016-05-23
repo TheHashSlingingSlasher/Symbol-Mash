@@ -1,23 +1,21 @@
 package math.calculus;
 
-import static math.calculus.Derivative.fill_elementaries;
+// Symbol-Mash Libraries
 import util.datastructures.parsetree.ParseTree;
 import util.datastructures.parsetree.Token;
-import java.util.HashSet;
+import util.datastructures.functionlookupmap.*;
 
 /**
  *
- * @author alec
+ * @author Alec Farfan
  */
 public class Integral {
-    public String antiderivative;
-    public static HashSet<String> elementaries = fill_elementaries();
     
+    public String antiderivative;
     
     public Integral(String function) {
         
         ParseTree tree = new ParseTree(function);
-        tree.fill_tree(function);
         antiderivative = integrate(tree);
         
     }
@@ -40,7 +38,7 @@ public class Integral {
             return send(f.getOperator(),f.getRValue(), f.getLValue());    
         }
         else if(f.getLValue() == null &&
-                elementaries.contains(f.getOperator())){
+                FunctionLookUpMap.contains(f.getOperator())){
             return send(f.getOperator(),
                           get_argument(f.getRValue()), "x");
         }

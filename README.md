@@ -1,22 +1,25 @@
-# *_Symbolica_*
+# *_Symbol-Mash_*
 
 ## Overview
 
-Symbolica is a collection of mathematical calculators
+Symbol-Mash is a suite of mathematics software with a focus on symbolic computation.
 
-Includes calculators for...
-* Derivatives
-* Integrals
+
+## Features
+
+Ability to symbolically compute..
+* Derivatives of functions of a single variable
+* Integrals of functions of a single variable
+
+Ability to operate on numerical values with...
 * Matrices
-
-For a more detailed description of Symbolica, see the [Wiki](https://github.com/joshuacamacho/symbolica/wiki)
 
 ## Basic Examples
 
 **Derivative**
 
     define f(x) = cos(x)
-	differentiate f(x)
+    differentiate f(x)
 Output
 
     sin(x)
@@ -29,4 +32,3 @@ Output
 Output
 
     -cos(x) +  C
-For further and more complex examples see the [Wiki](https://github.com/joshuacamacho/symbolica/wiki)

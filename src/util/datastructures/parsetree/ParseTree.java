@@ -24,36 +24,31 @@ public class ParseTree extends BinaryTree<Token>{
     public void fill_tree(String f){
 
         // Parse the function f(x) and create the Token object for current node
-        Token this_node = parse(f);
+        Token nodeData = parse(f);
         // Base Case 1: f is a single variable or constant
-        if(this_node.get_operand_1() == null&&this_node.get_operator() == null){
-            this.set_tree(new Token(f,this_node.get_operand_1(),
-            this_node.get_operand_2(),this_node.get_operator()),null,null);
-            
+        if(nodeData.isSingleTerm()){
+            this.set_tree(new Token(nodeData.getLValue(),
+            nodeData.getRValue(),nodeData.getOperator()),null,null);
         }
         // Base Case 2: f is a known function
-        else if(this_node.get_operator().equals("x^n")){
-            this.set_tree(new Token(f,this_node.get_operand_1(),
-                 this_node.get_operand_2(),this_node.get_operator()),null,null);
-  
+        else if(nodeData.getOperator().equals("x^n")){
+            this.set_tree(new Token(nodeData.getLValue(),
+                 nodeData.getRValue(),nodeData.getOperator()),null,null);
         }
-        else if(this_node.get_operand_1() == null &&
-            lookUpTable.contains(this_node.get_operator())){
-            this.set_tree(new Token(f,this_node.get_operand_1(),
-                    this_node.get_operand_2(),this_node.get_operator()),null,null);
+        else if(nodeData.getLValue() == null &&
+            lookUpTable.contains(nodeData.getOperator())){
+            this.set_tree(new Token(nodeData.getLValue(),
+                    nodeData.getRValue(),nodeData.getOperator()),null,null);
         }
         // Recursive Case: f is a sum, difference, product or quotient of functions
-        else if(!(this_node.get_operand_1() == null && this_node.get_operator() 
-                == null)){
-            
-            ParseTree left_sub = new ParseTree(this_node.get_operand_1());
-            ParseTree right_sub = new ParseTree(this_node.get_operand_2());
-            this.set_tree(new Token(f,this_node.get_operand_1(),
-               this_node.get_operand_2(),this_node.get_operator()),
+        else{
+            ParseTree left_sub = new ParseTree(nodeData.getLValue());
+            ParseTree right_sub = new ParseTree(nodeData.getRValue());
+            this.set_tree(new Token(nodeData.getLValue(),
+               nodeData.getRValue(),nodeData.getOperator()),
                     left_sub,right_sub);
-            
-            
         }
+        
     }
     
     /**
@@ -675,22 +670,6 @@ public class ParseTree extends BinaryTree<Token>{
     public String enclose(String expression){
         
         return "(" + expression + ")";
-        
-    }
-    
-    /**
-     * @breif Prints the nodes of the tree given an iterator to that tree .
-     * @param order An iterator pointing to the root of a tree.
-     */
-    @Override
-    public void print(Iterator<Token> order){
-        
-        Iterator<Token> pointer = order;
-        
-        while(pointer.hasNext()){
-            Token output = pointer.next();
-            System.out.println(output.get_original());
-        }
         
     }
     

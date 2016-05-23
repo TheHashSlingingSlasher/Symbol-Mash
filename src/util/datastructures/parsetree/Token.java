@@ -1,148 +1,141 @@
 package util.datastructures.parsetree;
 
 /**
- * Class for the Token objects which each node of the Parse_Tree will contain
- * @author Alec
+ * @author Alec Farfan
  */
 public class Token {
     
-    // Data members
-    private String original;  // Original String
-    private String operand_1; // Left operand of expression
-    private String operand_2; // Right operand of expression
+    private String lValue;    // Left operand of expression
+    private String rValue;    // Right operand of expression
     private String operator;  // Binary operator between the two operands
     
     /**
-     * Constructor for the Token Class that sets each data member to null
+     * @breif Default constructor for the Token Class. Sets each data member to
+     *        null.
      */
     public Token(){
         
-        original = null;
-        operand_1 = null;
-        operand_2 = null;
+        lValue = null;
+        rValue = null;
         operator = null;
         
     }
     
     /**
-     * Constructor for the Token Class that assigns the parameter f to the 
-     * data member original
-     * @param f The function f(x)
+     * @breif Constructor for the Token class. Assigns values for all three data
+     *        members of the class. 
+     * @param lValue Left operand of the expression.
+     * @param rValue Right operand of the expression.
+     * @param operator  Binary operator between the two operands.
      */
-    public Token(String f){
+    public Token(String lValue, String rValue, String operator){
         
-        original = f;
-        operand_1 = null;
-        operand_2 = null;
-        operator = null;
-        
-    }
-    
-    /**
-     * Constructor for the Token class
-     * @param operand_1 Left operand of the expression
-     * @param operand_2 Right operand of the expression
-     * @param operator  Binary operator between the two operands
-     */
-    public Token(String operand_1,String operand_2,String operator){
-        
-        this.operand_1 = operand_1;
-        this.operand_2 = operand_2;
+        this.lValue = lValue;
+        this.rValue = rValue;
         this.operator = operator;
         
     }
     
-        /**
-     * Constructor for the Token class
-     * @param operand_1 Left operand of the expression
-     * @param operand_2 Right operand of the expression
-     * @param operator  Binary operator between the two operands
-     */
-    public Token(String original,String operand_1,String operand_2,String operator){
-        
-        this.operand_1 = operand_1;
-        this.operand_2 = operand_2;
-        this.operator = operator;
-        this.original = original;
-    }
-    
     /**
-     * Setter method for operand_1
-     * @param original Value to be assigned to original
+     * @breif Setter method for the lValue field.
+     * @param operand Value to be assigned to the calling object's lValue field.
      */
-    public void set_original(String original){
+    public void setLValue(String operand){
         
-        this.original = original;
+        lValue = operand;
         
     }
     
     /**
-     * Getter method for operand_1
-     * @return The data member operand_1
+     * @breif Getter method for the lValue field.
+     * @return Value of the calling object's lValue field.
      */
-    public String get_original(){
+    public String getLValue(){
         
-        return original;
+        return lValue;
         
     }
     
     /**
-     * Setter method for operand_1
-     * @param operand Value to be assigned to operand_1
+     * @brief Setter method for the rValue field.
+     * @param operand Value to be assigned to the calling object's rValue field.
      */
-    public void set_operand_1(String operand){
+    public void setRValue(String operand){
         
-        operand_1 = operand;
+        rValue = operand;
         
     }
     
     /**
-     * Getter method for operand_1
-     * @return The data member operand_1
+     * @breif Getter method for the rValue field.
+     * @return Value of the calling object's rValue field.
      */
-    public String get_operand_1(){
+    public String getRValue(){
         
-        return operand_1;
+        return rValue;
         
     }
     
     /**
-     * Setter method for operand_2
-     * @param operand Value to be assigned to operand_2
+     * @brief Setter method for the operator field.
+     * @param operator Value to be assigned to the calling object's operator
+     *                 field
      */
-    public void set_operand_2(String operand){
-        
-        operand_2 = operand;
-        
-    }
-    
-    /**
-     * Getter method for operand_2
-     * @return The data member operand_2
-     */
-    public String get_operand_2(){
-        
-        return operand_2;
-        
-    }
-    
-    /**
-     * Setter method for operator
-     * @param operator Value to be assigned to operator
-     */
-    public void set_operator(String operator){
+    public void setOperator(String operator){
         
         this.operator = operator;
         
     }
     
     /**
-     * Getter method for operator
-     * @return The data member operator
+     * @breif Getter method for the operator field.
+     * @return Value of the calling object's operator field.
      */
-    public String get_operator(){
+    public String getOperator(){
         
         return operator;
+        
+    }
+    
+    /**
+     * @brief Determines whether or not the token has a lValue.
+     * @return True if an lValue exists, false otherwise.
+     */
+    public boolean hasLeft() {
+        
+        return lValue != null;
+        
+    }
+    
+    /**
+     * @brief Determines whether or not the token has an rValue.
+     * @return True if an rValue exists, false otherwise.
+     */
+    public boolean hasRight() {
+        
+        return rValue != null;
+        
+    }
+    
+    /**
+     * @brief Determines whether or not the token has an operator.
+     * @return True if an operator exists, false otherwise.
+     */
+    public boolean hasOperator() {
+        
+        return operator != null;
+        
+    }
+    
+    /**
+     * @breif Determines whether or not the token represents a single constant
+     *        or single variable, that is, only a single operand with no
+     *        operator.
+     * @return True if the expression is a single term, false otherwise.
+     */
+    public boolean isSingleTerm() {
+        
+        return (!this.hasLeft()) && (!this.hasOperator());
         
     }
     

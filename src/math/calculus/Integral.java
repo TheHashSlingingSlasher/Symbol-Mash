@@ -26,28 +26,28 @@ public class Integral {
         
         Token f = tree.get_root_data();
         // Base Case 1: f is a single variable or constant
-        if(f.get_operand_1() == null&& f.get_operator() == null){
-            if(f.get_operand_2() != null && f.get_operand_2().equals("x")){
+        if(f.getLValue() == null&& f.getOperator() == null){
+            if(f.getRValue() != null && f.getRValue().equals("x")){
                 return send("single","x","x");
             }
-            else if(f.get_operand_2() != null && tree.isConstant(f.get_operand_2())){
-                return send("constant", "x", f.get_operand_2());
+            else if(f.getRValue() != null && tree.isConstant(f.getRValue())){
+                return send("constant", "x", f.getRValue());
             }
             
         }
         // Base Case 2: f is a known function
-        else if(f.get_operator().equals("x^n")){
-            return send(f.get_operator(),f.get_operand_2(), f.get_operand_1());    
+        else if(f.getOperator().equals("x^n")){
+            return send(f.getOperator(),f.getRValue(), f.getLValue());    
         }
-        else if(f.get_operand_1() == null &&
-                elementaries.contains(f.get_operator())){
-            return send(f.get_operator(),
-                          get_argument(f.get_operand_2()), "x");
+        else if(f.getLValue() == null &&
+                elementaries.contains(f.getOperator())){
+            return send(f.getOperator(),
+                          get_argument(f.getRValue()), "x");
         }
         // Recursive Case: f is a sum, difference, product or quotient of       
-        ParseTree left_sub = new ParseTree(f.get_operand_1());
-        ParseTree right_sub = new ParseTree(f.get_operand_2());
-        return "";//temp(f.get_operator(),left_sub,right_sub);
+        ParseTree left_sub = new ParseTree(f.getLValue());
+        ParseTree right_sub = new ParseTree(f.getRValue());
+        return "";//temp(f.getOperator(),left_sub,right_sub);
         
     }
     

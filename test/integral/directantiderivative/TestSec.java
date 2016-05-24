@@ -18,7 +18,7 @@ public class TestSec {
     @Before
     public void setUp() {
     
-        antiderivative = new Integral("sec(x)").antiderivative;
+        antiderivative = Integral.integrate("sec(x)");
     
     }
     

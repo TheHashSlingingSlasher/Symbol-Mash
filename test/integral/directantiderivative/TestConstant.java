@@ -18,7 +18,7 @@ public class TestConstant {
     @Before
     public void setUp() {
         
-        antiderivative = new Integral("2").antiderivative;
+        antiderivative = Integral.integrate("2");
         
     }
     

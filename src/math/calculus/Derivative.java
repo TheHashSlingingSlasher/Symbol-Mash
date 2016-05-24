@@ -10,25 +10,6 @@ import util.datastructures.functionlookupmap.*;
  * @author Alec Farfan
  */
 public class Derivative {
-
-//    public String fPrime;
-//    
-//    /**
-//     * Constructor of the Derivative class
-//     * 
-//     */
-//    public Derivative(){
-//        
-//       
-//             
-//    }
-//    
-//    public Derivative(String function) {
-//        
-//        ParseTree tree = new ParseTree(function);
-//        fPrime = differentiate(tree);
-//        
-//    }
     
     public static String differentiate(String function) {
         

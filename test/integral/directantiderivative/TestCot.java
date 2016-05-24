@@ -18,7 +18,7 @@ public class TestCot {
     @Before
     public void setUp() {
     
-        antiderivative = new Integral("cot(x)").antiderivative;
+        antiderivative = Integral.integrate("cot(x)");
     
     }
     

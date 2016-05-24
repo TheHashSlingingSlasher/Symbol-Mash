@@ -18,7 +18,7 @@ public class TestExpE {
     @Before
     public void setUp() {
     
-        antiderivative = new Integral("e^(x)").antiderivative;
+        antiderivative = Integral.integrate("e^(x)");
     
     }
     

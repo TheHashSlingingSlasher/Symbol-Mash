@@ -18,7 +18,7 @@ public class TestLn {
     @Before
     public void setUp() {
         
-        antiderivative = new Integral("ln(x)").antiderivative;
+        antiderivative = Integral.integrate("ln(x)");
         
     }
     

@@ -11,16 +11,13 @@ import util.datastructures.functionlookupmap.*;
  */
 public class Integral {
     
-    public String antiderivative;
-    
-    public Integral(String function) {
-        
+    public static String integrate(String function){
+   
         ParseTree tree = new ParseTree(function);
-        antiderivative = integrate(tree);
-        
+        return integrate(tree);
     }
     
-    public String integrate(ParseTree tree) {
+    private static String integrate(ParseTree tree) {
         
         Token f = tree.get_root_data();
         // Base Case 1: f is a single variable or constant
@@ -57,7 +54,7 @@ public class Integral {
      * @param y        Additional parameter for two argument functions
      * @return         A String representing the derivative
      */
-    public String send(String function, String x, String y){
+    private static String send(String function, String x, String y){
         
         switch(function){
             case "sin":
@@ -103,7 +100,7 @@ public class Integral {
      * @param f The function f(x)
      * @return the argument x of f(x), May be another function entirely
      */
-    public String get_argument(String f){
+    private static String get_argument(String f){
         
         int i = 0; // Index of first parenthese
         int j = 0; // Index of corresponding ending parenthese
@@ -136,7 +133,7 @@ public class Integral {
      * @param c The constant to differentiate
      * @return  A String containing a single zero
      */
-    public String constant(String x, String c){
+    private static String constant(String x, String c){
         
         return c + x;
     
@@ -147,7 +144,7 @@ public class Integral {
      * @param x The variable x to differentiate
      * @return A string containing a 1
      */
-    public String single(String x){
+    private static String single(String x){
         
         return "x^(2)";
         
@@ -159,7 +156,7 @@ public class Integral {
      * @param exponent The exponent n
      * @return         A String containing n(x)^(n-1)
      */
-    public String power(String exponent,String base){
+    private static String power(String exponent,String base){
         
         int new_exponent = Integer.parseInt(exponent);
         
@@ -174,7 +171,7 @@ public class Integral {
      * @param exponent The exponent x
      * @return         The String containing a^x ln(a)
      */
-    public String exp_a(String base, String exponent){
+    private static String exp_a(String base, String exponent){
      
         return base + "^(" +  exponent +")" + "ln(" + base + ")";
         
@@ -185,7 +182,7 @@ public class Integral {
      * @param exponent The exponent x
      * @return         The String containing e^x
      */
-    public String exp_e(String exponent){
+    private static String exp_e(String exponent){
         
         return "e^(" + exponent +")";
    
@@ -196,7 +193,7 @@ public class Integral {
      * @param x The parameter x of the function ln(x)
      * @return  String containing 1/x
      */
-    public String ln(String x){
+    private static String ln(String x){
         
  
         return x + "ln(" + x + ")-x";
@@ -209,7 +206,7 @@ public class Integral {
      * @param x    The parameter x of the function log_a(x)
      * @return     The String containing 1/(x ln(a))
      */
-    public String log(String base, String x){
+    private static String log(String base, String x){
         
         // If the function is elementary, return the known derivative
        // if(x.equals("x")){
@@ -223,7 +220,7 @@ public class Integral {
      * @param x The parameter x of the function sin(x)
      * @return  A String containing cos(x)
      */
-    public String sin(String x){
+    private static String sin(String x){
         
         return "-cos(" + x + ")";
         
@@ -234,7 +231,7 @@ public class Integral {
      * @param x The parameter x of the function cos(x)
      * @return  A string containing -sin(x)
      */
-    public String cos(String x){
+    private static String cos(String x){
         
         return "sin(" + x + ")";
         
@@ -245,7 +242,7 @@ public class Integral {
      * @param x The parameter x of the function tan(x)
      * @return  A String containing sec^2(x)
      */
-    public String tan(String x){
+    private static String tan(String x){
         
         return "ln(sec(" + x + "))";
         
@@ -256,7 +253,7 @@ public class Integral {
      * @param x The parameter x of the function csc(x)
      * @return 
      */
-    public String csc(String x){
+    private static String csc(String x){
         
         // If the function is elementary, return the known derivative
         //if(x.equals("x")){
@@ -270,7 +267,7 @@ public class Integral {
      * @param x The parameter x of the function sec(x)
      * @return  A String containing sec(x)tan(x)
      */
-    public String sec(String x){
+    private static String sec(String x){
         
         // If the function is elementary, return the known derivative
        // if(x.equals("x")){
@@ -284,7 +281,7 @@ public class Integral {
      * @param x The parameter x of the function cot(x)
      * @return  A String containing -csc^2(x)
      */
-    public String cot(String x){
+    private static String cot(String x){
         
         return "ln(sin(" + x + "))";
         
@@ -295,7 +292,7 @@ public class Integral {
      * @param x The parameter x of the function arcsin(x)
      * @return  The String 1/(1-x^(2))^(1/2)
      */
-    public String arcsin(String x){
+    private static String arcsin(String x){
         
         return x + "arcsin(" + x + ")+(1-x^(2))^(1/2)";
         
@@ -306,7 +303,7 @@ public class Integral {
      * @param x The parameter of the function arccos(x)
      * @return  The String -1/(1+x^(2))^(1/2)
      */
-    public String arccos(String x){
+    private static String arccos(String x){
         
         // If the function is elementary, return the known derivative
         //if(x.equals("x")){
@@ -320,7 +317,7 @@ public class Integral {
      * @param x The parameter of the function arctan(x)
      * @return  The String 1/(1+x^(2))
      */
-    public String arctan(String x){
+    private static String arctan(String x){
         
         // If the function is elementary, return the known derivative
        // if(x.equals("x")){
@@ -334,7 +331,7 @@ public class Integral {
      * @param x The parameter of the function sinh(x)
      * @return The string cosh(x)
      */
-    public String sinh(String x){
+    private static String sinh(String x){
        
         // If the function is elementary, return the known derivative
         //if(x.equals("x")){
@@ -348,7 +345,7 @@ public class Integral {
      * @param x The parameter x of cosh(x)
      * @return  The string sinh(x)
      */
-    public String cosh(String x){
+    private static String cosh(String x){
         
         // If the function is elementary, return the known derivative
         //if(x.equals("x")){
@@ -363,7 +360,7 @@ public class Integral {
      * @param g The function g(x)
      * @return d/dx(f + g) = d/dx(f) + d/dx(g)
      */
-    public String sum(String f, String g){
+    private static String sum(String f, String g){
         
         return f + " + " + g;
         
@@ -375,7 +372,7 @@ public class Integral {
      * @param g The function g(x)
      * @return d/dx(f - g) = d/dx(f) - d/dx(g)
      */
-    public String difference(String f, String g){
+    private static String difference(String f, String g){
         
         return f + " - " + g;
         

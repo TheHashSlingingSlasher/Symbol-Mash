@@ -17,7 +17,7 @@ public class TestSin {
     @Before
     public void setUp() {
         
-        antiderivative = new Integral("sin(x)").antiderivative;
+        antiderivative = Integral.integrate("sin(x)");
         
     }
     

@@ -18,7 +18,7 @@ public class TestTan {
     @Before
     public void setUp() {
         
-        antiderivative = new Integral("tan(x)").antiderivative;
+        antiderivative = Integral.integrate("tan(x)");
         
     }
     

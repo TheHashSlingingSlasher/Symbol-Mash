@@ -18,7 +18,7 @@ public class TestCsc {
     @Before
     public void setUp() {
         
-        antiderivative = new Integral("csc(x)").antiderivative;
+        antiderivative = Integral.integrate("csc(x)");
         
     }
     

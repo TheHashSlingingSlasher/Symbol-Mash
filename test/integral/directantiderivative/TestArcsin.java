@@ -18,7 +18,7 @@ public class TestArcsin {
     @Before
     public void setUp() {
     
-        antiderivative = new Integral("arcsin(x)").antiderivative;
+        antiderivative = Integral.integrate("arcsin(x)");
     
     }
     

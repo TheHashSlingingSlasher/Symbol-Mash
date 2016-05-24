@@ -18,7 +18,7 @@ public class TestCos {
     @Before
     public void setUp() {
         
-        antiderivative = new Integral("cos(x)").antiderivative;
+        antiderivative = Integral.integrate("cos(x)");
         
     }
     

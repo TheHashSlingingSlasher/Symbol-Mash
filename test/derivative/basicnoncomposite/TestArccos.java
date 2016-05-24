@@ -17,7 +17,7 @@ public class TestArccos {
     @Before
     public void setUp() {
     
-        fPrime = new Derivative("arccos(x)").fPrime;
+        fPrime = Derivative.differentiate("arccos(x)");
     
     }
     

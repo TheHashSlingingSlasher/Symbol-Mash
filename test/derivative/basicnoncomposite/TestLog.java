@@ -17,7 +17,7 @@ public class TestLog {
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("log(x)").fPrime;
+        fPrime = Derivative.differentiate("log(x)");
         
     }
     

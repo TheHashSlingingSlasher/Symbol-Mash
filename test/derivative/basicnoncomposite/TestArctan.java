@@ -17,7 +17,7 @@ public class TestArctan {
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("arctan(x)").fPrime;
+        fPrime = Derivative.differentiate("arctan(x)");
         
     }
     

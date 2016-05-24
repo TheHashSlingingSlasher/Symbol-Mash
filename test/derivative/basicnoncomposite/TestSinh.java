@@ -17,7 +17,7 @@ public class TestSinh {
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("sinh(x)").fPrime;
+        fPrime = Derivative.differentiate("sinh(x)");
         
     }
     

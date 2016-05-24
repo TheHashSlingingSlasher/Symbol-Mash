@@ -17,7 +17,7 @@ public class TestLn {
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("ln(x)").fPrime;
+        fPrime = Derivative.differentiate("ln(x)");
         
     }
     

@@ -17,7 +17,7 @@ public class TestSec {
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("sec(x)").fPrime;
+        fPrime = Derivative.differentiate("sec(x)");
         
     }
     

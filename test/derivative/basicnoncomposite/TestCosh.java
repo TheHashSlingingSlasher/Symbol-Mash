@@ -17,7 +17,7 @@ public class TestCosh {
     @Before
     public void setUp() {
 
-        fPrime = new Derivative("cosh(x)").fPrime;
+        fPrime = Derivative.differentiate("cosh(x)");
         
     }
     

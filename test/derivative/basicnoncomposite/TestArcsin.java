@@ -17,7 +17,7 @@ public class TestArcsin {
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("arcsin(x)").fPrime;
+        fPrime = Derivative.differentiate("arcsin(x)");
         
     }
     

@@ -18,7 +18,7 @@ public class TestCot {
     @Before
     public void setUp() {
     
-        fPrime = new Derivative("cot(x)").fPrime;
+        fPrime = Derivative.differentiate("cot(x)");
         
     }
     

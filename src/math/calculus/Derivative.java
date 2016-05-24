@@ -11,26 +11,33 @@ import util.datastructures.functionlookupmap.*;
  */
 public class Derivative {
 
-    public String fPrime;
+//    public String fPrime;
+//    
+//    /**
+//     * Constructor of the Derivative class
+//     * 
+//     */
+//    public Derivative(){
+//        
+//       
+//             
+//    }
+//    
+//    public Derivative(String function) {
+//        
+//        ParseTree tree = new ParseTree(function);
+//        fPrime = differentiate(tree);
+//        
+//    }
     
-    /**
-     * Constructor of the Derivative class
-     * 
-     */
-    public Derivative(){
-        
-       
-             
-    }
-    
-    public Derivative(String function) {
+    public static String differentiate(String function) {
         
         ParseTree tree = new ParseTree(function);
-        fPrime = differentiate(tree);
+        return differentiate(tree);
         
     }
     
-    public String differentiate(ParseTree tree) {
+    private static String differentiate(ParseTree tree) {
         
         Token f = tree.get_root_data();
         // Base Case 1: f is a single variable or constant
@@ -59,7 +66,7 @@ public class Derivative {
         
     }
     
-    public String temp(String operator, ParseTree left, ParseTree right) {
+    private static String temp(String operator, ParseTree left, ParseTree right) {
         
             switch(operator){
                 case "+":
@@ -96,7 +103,7 @@ public class Derivative {
      * @param y        Additional parameter for two argument functions
      * @return         A String representing the derivative
      */
-    public String derive(String function, String x, String y){
+    private static String derive(String function, String x, String y){
         
         switch(function){
             case "sin":
@@ -142,7 +149,7 @@ public class Derivative {
      * @param c The constant to differentiate
      * @return  A String containing a single zero
      */
-    public String constant(String c){
+    private static String constant(String c){
     
         return "0";
     
@@ -153,7 +160,7 @@ public class Derivative {
      * @param x The variable x to differentiate
      * @return A string containing a 1
      */
-    public String single(String x){
+    private static String single(String x){
         
         return "1";
         
@@ -165,7 +172,7 @@ public class Derivative {
      * @param exponent The exponent n
      * @return         A String containing n(x)^(n-1)
      */
-    public String power(String exponent,String base){
+    private static String power(String exponent,String base){
         
         System.out.println(base + " * " + exponent);
         
@@ -186,7 +193,7 @@ public class Derivative {
      * @param exponent The exponent x
      * @return         The String containing a^x ln(a)
      */
-    public String exp_a(String base, String exponent){
+    private static String exp_a(String base, String exponent){
      
         return base + "^(" +  exponent +")" + "ln(" + base + ")";
         
@@ -197,7 +204,7 @@ public class Derivative {
      * @param exponent The exponent x
      * @return         The String containing e^x
      */
-    public String exp_e(String exponent){
+    private static String exp_e(String exponent){
         
         return "e^(" + exponent +")";
    
@@ -208,7 +215,7 @@ public class Derivative {
      * @param x The parameter x of the function ln(x)
      * @return  String containing 1/x
      */
-    public String ln(String x){
+    private static String ln(String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){         
@@ -228,7 +235,7 @@ public class Derivative {
      * @param x    The parameter x of the function log_a(x)
      * @return     The String containing 1/(x ln(a))
      */
-    public String log(String base, String x){
+    private static String log(String base, String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -247,7 +254,7 @@ public class Derivative {
      * @param x The parameter x of the function sin(x)
      * @return  A String containing cos(x)
      */
-    public String sin(String x){
+    private static String sin(String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -266,7 +273,7 @@ public class Derivative {
      * @param x The parameter x of the function cos(x)
      * @return  A string containing -sin(x)
      */
-    public String cos(String x){
+    private static String cos(String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -285,7 +292,7 @@ public class Derivative {
      * @param x The parameter x of the function tan(x)
      * @return  A String containing sec^2(x)
      */
-    public String tan(String x){
+    private static String tan(String x){
         
         // If the function is elementray, return the known derivative
         if(x.equals("x")){
@@ -304,7 +311,7 @@ public class Derivative {
      * @param x The parameter x of the function csc(x)
      * @return 
      */
-    public String csc(String x){
+    private static String csc(String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -324,7 +331,7 @@ public class Derivative {
      * @param x The parameter x of the function sec(x)
      * @return  A String containing sec(x)tan(x)
      */
-    public String sec(String x){
+    private static String sec(String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -344,7 +351,7 @@ public class Derivative {
      * @param x The parameter x of the function cot(x)
      * @return  A String containing -csc^2(x)
      */
-    public String cot(String x){
+    private static String cot(String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -364,7 +371,7 @@ public class Derivative {
      * @param x The parameter x of the function arcsin(x)
      * @return  The String 1/(1-x^(2))^(1/2)
      */
-    public String arcsin(String x){
+    private static String arcsin(String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -384,7 +391,7 @@ public class Derivative {
      * @param x The parameter of the function arccos(x)
      * @return  The String -1/(1+x^(2))^(1/2)
      */
-    public String arccos(String x){
+    private static String arccos(String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -404,7 +411,7 @@ public class Derivative {
      * @param x The parameter of the function arctan(x)
      * @return  The String 1/(1+x^(2))
      */
-    public String arctan(String x){
+    private static String arctan(String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -424,7 +431,7 @@ public class Derivative {
      * @param x The parameter of the function sinh(x)
      * @return The string cosh(x)
      */
-    public String sinh(String x){
+    private static String sinh(String x){
        
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -444,7 +451,7 @@ public class Derivative {
      * @param x The parameter x of cosh(x)
      * @return  The string sinh(x)
      */
-    public String cosh(String x){
+    private static String cosh(String x){
         
         // If the function is elementary, return the known derivative
         if(x.equals("x")){
@@ -465,7 +472,7 @@ public class Derivative {
      * @param g The function g(x)
      * @return d/dx(f + g) = d/dx(f) + d/dx(g)
      */
-    public String sum(String f, String g){
+    private static String sum(String f, String g){
         
         return f + " + " + g;
         
@@ -477,7 +484,7 @@ public class Derivative {
      * @param g The function g(x)
      * @return d/dx(f - g) = d/dx(f) - d/dx(g)
      */
-    public String difference(String f, String g){
+    private static String difference(String f, String g){
         
         return f + " - " + g;
         
@@ -491,7 +498,7 @@ public class Derivative {
      * @param g_prime // The function g'(x)
      * @return        // d/dx(fg) = f(x)g'(x) + g(x)f'(x)
      */
-    public String product(String f, String f_prime, String g, String g_prime){
+    private static String product(String f, String f_prime, String g, String g_prime){
         
         return  f + "(" + g_prime + ")" + " + "
               + g + "(" + f_prime + ")";
@@ -506,7 +513,7 @@ public class Derivative {
      * @param g_prime // The function g'(x)
      * @return        // d/dx(f/g) = (g(x)f'(x) - f(x)g'(x))/(g(x))^(2)
      */
-    public String quotient(String f, String f_prime, String g, String g_prime){
+    private static String quotient(String f, String f_prime, String g, String g_prime){
         
         return  "(" + g + "(" + f_prime + ")" + " - "
               + f + "(" + g_prime + "))/(" + g + ")^(2)";
@@ -518,7 +525,7 @@ public class Derivative {
      * @param f The function f(x)
      * @return the argument x of f(x), May be another function entirely
      */
-    public String get_argument(String f){
+    private static String get_argument(String f){
         
         int i = 0; // Index of first parenthese
         int j = 0; // Index of corresponding ending parenthese
@@ -551,7 +558,7 @@ public class Derivative {
      * @param f The function f(x)
      * @return True if the function is elementary, false if composite
      */
-    public boolean is_elementary(String f){
+    private static boolean is_elementary(String f){
         
         return get_argument(f).equals("x");
         

@@ -17,7 +17,7 @@ public class TestCos {
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("cos(x)").fPrime;
+        fPrime = Derivative.differentiate("cos(x)");
         
     }
  

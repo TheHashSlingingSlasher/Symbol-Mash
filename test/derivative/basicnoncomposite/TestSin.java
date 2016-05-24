@@ -17,7 +17,7 @@ public class TestSin {
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("sin(x)").fPrime;
+        fPrime = Derivative.differentiate("sin(x)");
         
     }
     

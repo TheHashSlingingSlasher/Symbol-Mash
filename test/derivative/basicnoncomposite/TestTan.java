@@ -17,7 +17,7 @@ public class TestTan {
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("tan(x)").fPrime;
+        fPrime = Derivative.differentiate("tan(x)");
         
     }
     

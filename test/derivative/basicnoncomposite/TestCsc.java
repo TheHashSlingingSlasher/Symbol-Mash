@@ -17,7 +17,7 @@ public class TestCsc {
     @Before
     public void setUp() {
         
-        fPrime = new Derivative("csc(x)").fPrime;
+        fPrime = Derivative.differentiate("csc(x)");
         
     }
     

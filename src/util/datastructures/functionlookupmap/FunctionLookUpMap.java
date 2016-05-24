@@ -10,7 +10,6 @@ public final class FunctionLookUpMap {
     
     public static final HashMap<String, Pair> table;
     static{
-        
         HashMap<String, Pair> tempTable = new HashMap();
         tempTable .put("ln", new Pair("1/x", "xln(x)-ln(x)"));
         tempTable .put("log", new Pair("log(a,x)(1/x)", "log(a,x)/x"));       
@@ -36,6 +35,5 @@ public final class FunctionLookUpMap {
         return table.containsKey(str);
         
     }
-    
     
 }

@@ -288,7 +288,8 @@ public class Terminal {
         String name = get_name(input);
         
         if(functions.containsKey(name))
-            return  new Derivative(functions.get(name)).fPrime;
+            return  Derivative.differentiate(functions.get(name));
+        //new Derivative(functions.get(name)).fPrime;
         
         else
             return null;

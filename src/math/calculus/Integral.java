@@ -1,9 +1,9 @@
 package math.calculus;
 
 // Symbol-Mash Libraries
+import util.datastructures.mathfunctioncache.MathFunctionCache;
 import util.datastructures.parsetree.ParseTree;
 import util.datastructures.parsetree.Token;
-import util.datastructures.functionlookupmap.*;
 
 /**
  *
@@ -15,6 +15,7 @@ public class Integral {
    
         ParseTree tree = new ParseTree(function);
         return integrate(tree);
+        
     }
     
     private static String integrate(ParseTree tree) {
@@ -35,7 +36,7 @@ public class Integral {
             return send(f.getOperator(),f.getRValue(), f.getLValue());    
         }
         else if(f.getLValue() == null &&
-                FunctionLookUpMap.contains(f.getOperator())){
+                MathFunctionCache.contains(f.getOperator())){
             return send(f.getOperator(),
                           get_argument(f.getRValue()), "x");
         }
@@ -56,42 +57,7 @@ public class Integral {
      */
     private static String send(String function, String x, String y){
         
-        switch(function){
-            case "sin":
-                return sin(x);
-            case "cos":
-                return cos(x);
-            case "tan":
-                return tan(x);
-            case "csc":
-                return csc(x);
-            case "sec":
-                return sec(x);
-            case "cot":
-                return cot(x);
-            case "arcsin":
-                return arcsin(x);
-            case "arccos":
-                return arccos(x);
-            case "arctan":
-                return arctan(x);
-            case "e^x":
-                return exp_e(x);
-            case "a^x":
-                return exp_a(x,y);
-            case "x^n":
-                return power(x,y);
-            case "ln":
-                return ln(x);
-            case "log":
-                return log(x,y);
-            case "constant":
-                return constant(x, y);
-            case "single":
-                return single(x);
-        }
-        
-        return "FAILURE";
+        return MathFunctionCache.table.get(function).getValue();
         
     }
     
@@ -129,28 +95,6 @@ public class Integral {
     }
     
     /**
-     * Computes the derivative of a constant c
-     * @param c The constant to differentiate
-     * @return  A String containing a single zero
-     */
-    private static String constant(String x, String c){
-        
-        return c + x;
-    
-    }
-    
-    /**
-     * Computes the derivative of a single variable x
-     * @param x The variable x to differentiate
-     * @return A string containing a 1
-     */
-    private static String single(String x){
-        
-        return "x^(2)";
-        
-    }
-    
-    /**
      * Calculates the derivative of a power function x^n
      * @param base     The base x
      * @param exponent The exponent n
@@ -164,195 +108,6 @@ public class Integral {
             return new_exponent + base + "^(" + (new_exponent-1) + ")";
             
     }
-    
-    /**
-     * Calculates the derivative of an exponential function a^x
-     * @param base     The base a
-     * @param exponent The exponent x
-     * @return         The String containing a^x ln(a)
-     */
-    private static String exp_a(String base, String exponent){
-     
-        return base + "^(" +  exponent +")" + "ln(" + base + ")";
-        
-    }
-    
-    /**
-     * Calculates the derivative of an exponential function e^x
-     * @param exponent The exponent x
-     * @return         The String containing e^x
-     */
-    private static String exp_e(String exponent){
-        
-        return "e^(" + exponent +")";
-   
-    }
-    
-    /**
-     * Calculates the derivative of the natural logarithmic function ln(x)
-     * @param x The parameter x of the function ln(x)
-     * @return  String containing 1/x
-     */
-    private static String ln(String x){
-        
- 
-        return x + "ln(" + x + ")-x";
-        
-    }
-    
-    /**
-     * Calculates the derivative of a logarithmic function with base a
-     * @param base The base of the logarithm
-     * @param x    The parameter x of the function log_a(x)
-     * @return     The String containing 1/(x ln(a))
-     */
-    private static String log(String base, String x){
-        
-        // If the function is elementary, return the known derivative
-       // if(x.equals("x")){
-            return "1/(" + x + "ln(" + base + "))";
-        //}
-        
-    }
-    
-    /**
-     * Calculates the derivative of the sine function
-     * @param x The parameter x of the function sin(x)
-     * @return  A String containing cos(x)
-     */
-    private static String sin(String x){
-        
-        return "-cos(" + x + ")";
-        
-    }
-    
-    /**
-     * Calculates the derivative of the cosine function
-     * @param x The parameter x of the function cos(x)
-     * @return  A string containing -sin(x)
-     */
-    private static String cos(String x){
-        
-        return "sin(" + x + ")";
-        
-    }
-    
-    /**
-     * Calculates the derivative of the tangent function
-     * @param x The parameter x of the function tan(x)
-     * @return  A String containing sec^2(x)
-     */
-    private static String tan(String x){
-        
-        return "ln(sec(" + x + "))";
-        
-    }
-    
-    /**
-     * Calculates the derivative of the cosecant function
-     * @param x The parameter x of the function csc(x)
-     * @return 
-     */
-    private static String csc(String x){
-        
-        // If the function is elementary, return the known derivative
-        //if(x.equals("x")){
-            return "ln(csc(" + x + ")" + "-cot(" + x + ")";
-        //}
-        
-    }
-    
-    /**
-     * Calculates the derivative of the secant function
-     * @param x The parameter x of the function sec(x)
-     * @return  A String containing sec(x)tan(x)
-     */
-    private static String sec(String x){
-        
-        // If the function is elementary, return the known derivative
-       // if(x.equals("x")){
-            return "ln(sec(" + x + ")" + "+tan(" + x + "))";
-        //}
-        
-    }
-    
-    /**
-     * Calculates the derivative of the cotangent function
-     * @param x The parameter x of the function cot(x)
-     * @return  A String containing -csc^2(x)
-     */
-    private static String cot(String x){
-        
-        return "ln(sin(" + x + "))";
-        
-    }
-    
-    /**
-     * Calculates the derivative of the arcsine function
-     * @param x The parameter x of the function arcsin(x)
-     * @return  The String 1/(1-x^(2))^(1/2)
-     */
-    private static String arcsin(String x){
-        
-        return x + "arcsin(" + x + ")+(1-x^(2))^(1/2)";
-        
-    }
-    
-    /**
-     * Calculates the derivative of the arccosine function
-     * @param x The parameter of the function arccos(x)
-     * @return  The String -1/(1+x^(2))^(1/2)
-     */
-    private static String arccos(String x){
-        
-        // If the function is elementary, return the known derivative
-        //if(x.equals("x")){
-           return "-1/(1+" + x + "^(2))^(1/2)"; 
-        //}
-        
-    }
-    
-    /**
-     * Calculates the derivative of the arctangent function
-     * @param x The parameter of the function arctan(x)
-     * @return  The String 1/(1+x^(2))
-     */
-    private static String arctan(String x){
-        
-        // If the function is elementary, return the known derivative
-       // if(x.equals("x")){
-            return "1/(1+(" + x + ")^(2))";
-        //}
-        
-    }
-    
-    /**
-     * Calculates the derivative of the sinh(x) function
-     * @param x The parameter of the function sinh(x)
-     * @return The string cosh(x)
-     */
-    private static String sinh(String x){
-       
-        // If the function is elementary, return the known derivative
-        //if(x.equals("x")){
-            return "cosh(" + x + ")";
-        //}
-        
-    }
-    
-    /**
-     * Calculate the derivative of the cosh(x) function
-     * @param x The parameter x of cosh(x)
-     * @return  The string sinh(x)
-     */
-    private static String cosh(String x){
-        
-        // If the function is elementary, return the known derivative
-        //if(x.equals("x")){
-            return "sinh(" + x + ")";
-        //}
-    }
-    
     
     /**
      * Calculates the derivative of a sum

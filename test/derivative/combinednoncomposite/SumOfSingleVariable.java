@@ -1,4 +1,4 @@
-package derivative.basicnoncomposite;
+package derivative.combinednoncomposite;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -10,21 +10,21 @@ import math.calculus.Derivative;
  *
  * @author alec
  */
-public class TestLn {
+public class SumOfSingleVariable {
     
     String fPrime;
-    
+
     @Before
     public void setUp() {
         
-        fPrime = Derivative.differentiate("ln(x)");
+        fPrime = Derivative.differentiate("x+x");
         
     }
     
     @Test
-    public void testLn() {
+    public void testSumOfSingleVariable() {
         
-        assertEquals("1/x", fPrime);
+        assertEquals("(1 + 1)", fPrime);
         
     }
     

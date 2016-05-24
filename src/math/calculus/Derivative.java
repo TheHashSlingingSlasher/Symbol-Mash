@@ -1,9 +1,9 @@
 package math.calculus;
 
 // Symbol-Mash Libraries
+import util.datastructures.mathfunctioncache.MathFunctionCache;
 import util.datastructures.parsetree.Token;
 import util.datastructures.parsetree.ParseTree;
-import util.datastructures.functionlookupmap.*;
 
 /**
  *
@@ -36,9 +36,9 @@ public class Derivative {
             return derive(f.getOperator(),f.getRValue(), f.getLValue());    
         }
         else if(f.getLValue() == null &&
-            FunctionLookUpMap.contains(f.getOperator())){
+            MathFunctionCache.contains(f.getOperator())){
             return derive(f.getOperator(),
-                          get_argument(f.getRValue()), "x");
+                          getArgument(f.getRValue()), "x");
         }
         // Recursive Case: f is a sum, difference, product or quotient of       
         ParseTree left_sub = new ParseTree(f.getLValue());
@@ -86,64 +86,12 @@ public class Derivative {
      */
     private static String derive(String function, String x, String y){
         
-        switch(function){
-            case "sin":
-                return sin(x);
-            case "cos":
-                return cos(x);
-            case "tan":
-                return tan(x);
-            case "csc":
-                return csc(x);
-            case "sec":
-                return sec(x);
-            case "cot":
-                return cot(x);
-            case "arcsin":
-                return arcsin(x);
-            case "arccos":
-                return arccos(x);
-            case "arctan":
-                return arctan(x);
-            case "e^x":
-                return exp_e(x);
-            case "a^x":
-                return exp_a(x,y);
-            case "x^n":
-                return power(x,y);
-            case "ln":
-                return ln(x);
-            case "log":
-                return log(x,y);
-            case "constant":
-                return constant(x);
-            case "single":
-                return single(x);
+        if(isComposite(x))
+            return MathFunctionCache.table.get(function).getKey();
+        else{
+            return MathFunctionCache.table.get(function).getKey() +
+                   Derivative.differentiate(x);
         }
-        
-        return "FAILURE";
-        
-    }
-    
-    /**
-     * Computes the derivative of a constant c
-     * @param c The constant to differentiate
-     * @return  A String containing a single zero
-     */
-    private static String constant(String c){
-    
-        return "0";
-    
-    }
-    
-    /**
-     * Computes the derivative of a single variable x
-     * @param x The variable x to differentiate
-     * @return A string containing a 1
-     */
-    private static String single(String x){
-        
-        return "1";
         
     }
     
@@ -167,285 +115,6 @@ public class Derivative {
         }
             
     }
-    
-    /**
-     * Calculates the derivative of an exponential function a^x
-     * @param base     The base a
-     * @param exponent The exponent x
-     * @return         The String containing a^x ln(a)
-     */
-    private static String exp_a(String base, String exponent){
-     
-        return base + "^(" +  exponent +")" + "ln(" + base + ")";
-        
-    }
-    
-    /**
-     * Calculates the derivative of an exponential function e^x
-     * @param exponent The exponent x
-     * @return         The String containing e^x
-     */
-    private static String exp_e(String exponent){
-        
-        return "e^(" + exponent +")";
-   
-    }
-    
-    /**
-     * Calculates the derivative of the natural logarithmic function ln(x)
-     * @param x The parameter x of the function ln(x)
-     * @return  String containing 1/x
-     */
-    private static String ln(String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){         
-            return "1/(" + x + ")";
-        }
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return differentiate(chain) + "1/(" + x + ")";
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of a logarithmic function with base a
-     * @param base The base of the logarithm
-     * @param x    The parameter x of the function log_a(x)
-     * @return     The String containing 1/(x ln(a))
-     */
-    private static String log(String base, String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-            return "1/(" + x + "ln(" + base + "))";
-        }
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "1/(" + x + ")" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of the sine function
-     * @param x The parameter x of the function sin(x)
-     * @return  A String containing cos(x)
-     */
-    private static String sin(String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-            return "cos(" + x + ")";
-        }
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return  "cos(" + x + ")" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of the cosine function
-     * @param x The parameter x of the function cos(x)
-     * @return  A string containing -sin(x)
-     */
-    private static String cos(String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-            return "-sin(" + x + ")";
-        }
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "-sin(" + x + ")" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of the tangent function
-     * @param x The parameter x of the function tan(x)
-     * @return  A String containing sec^2(x)
-     */
-    private static String tan(String x){
-        
-        // If the function is elementray, return the known derivative
-        if(x.equals("x")){
-            return "sec^2(" + x + ")";
-        }
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "sec^2(" + x + ")" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of the cosecant function
-     * @param x The parameter x of the function csc(x)
-     * @return 
-     */
-    private static String csc(String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-            return "-csc(" + x + ")" + "cot(" + x + ")";
-        }
-        
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "-csc(" + x + ")" + "cot(" + x + ")" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of the secant function
-     * @param x The parameter x of the function sec(x)
-     * @return  A String containing sec(x)tan(x)
-     */
-    private static String sec(String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-            return "sec(" + x + ")" + "tan(" + x + ")";
-        }
-        
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "sec(" + x + ")" + "tan(" + x + ")" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of the cotangent function
-     * @param x The parameter x of the function cot(x)
-     * @return  A String containing -csc^2(x)
-     */
-    private static String cot(String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-            return "-csc^2(" + x + ")";
-        }
-        
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "-csc^2(" + x + ")" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of the arcsine function
-     * @param x The parameter x of the function arcsin(x)
-     * @return  The String 1/(1-x^(2))^(1/2)
-     */
-    private static String arcsin(String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-            return "1/(1-" + x + "^(2))^(1/2)";
-        }
-        
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "1/(1-" + x + "^(2))^(1/2)" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of the arccosine function
-     * @param x The parameter of the function arccos(x)
-     * @return  The String -1/(1+x^(2))^(1/2)
-     */
-    private static String arccos(String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-           return "-1/(1+" + x + "^(2))^(1/2)"; 
-        }
-        
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "-1/(1+" + x + "^(2))^(1/2)" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of the arctangent function
-     * @param x The parameter of the function arctan(x)
-     * @return  The String 1/(1+x^(2))
-     */
-    private static String arctan(String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-            return "1/(1+(" + x + ")^(2))";
-        }
-        
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "1/(1 + (" + x + ")^(2))" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculates the derivative of the sinh(x) function
-     * @param x The parameter of the function sinh(x)
-     * @return The string cosh(x)
-     */
-    private static String sinh(String x){
-       
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-            return "cosh(" + x + ")";
-        }
-        
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "cosh(" + x + ")" + differentiate(chain);
-        }
-        
-    }
-    
-    /**
-     * Calculate the derivative of the cosh(x) function
-     * @param x The parameter x of cosh(x)
-     * @return  The string sinh(x)
-     */
-    private static String cosh(String x){
-        
-        // If the function is elementary, return the known derivative
-        if(x.equals("x")){
-            return "sinh(" + x + ")";
-        }
-        
-        // Else, apply the chain rule
-        else{
-            ParseTree chain = new ParseTree(x);
-            return "sinh(" + x + ")" + differentiate(chain);
-        }
-    }
-    
     
     /**
      * Calculates the derivative of a sum
@@ -506,7 +175,10 @@ public class Derivative {
      * @param f The function f(x)
      * @return the argument x of f(x), May be another function entirely
      */
-    private static String get_argument(String f){
+    private static String getArgument(String f){
+        
+        if(f.equals("x"))
+            return "x";
         
         int i = 0; // Index of first parenthese
         int j = 0; // Index of corresponding ending parenthese
@@ -539,10 +211,10 @@ public class Derivative {
      * @param f The function f(x)
      * @return True if the function is elementary, false if composite
      */
-    private static boolean is_elementary(String f){
+    private static boolean isComposite(String f){
         
-        return get_argument(f).equals("x");
+        return getArgument(f).equals("x");
         
     }
     
-} // End of Derivative
+}

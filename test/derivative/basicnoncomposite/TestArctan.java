@@ -24,7 +24,7 @@ public class TestArctan {
     @Test
     public void testArctan() {
         
-        assertEquals("1/(1+(x)^(2))", fPrime);
+        assertEquals("1/(1+x^(2))", fPrime);
         
     }
     

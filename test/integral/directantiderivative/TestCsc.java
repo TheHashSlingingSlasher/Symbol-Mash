@@ -25,7 +25,7 @@ public class TestCsc {
     @Test
     public void testCsc() {
         
-        assertEquals("ln(csc(x)-cot(x)", antiderivative);
+        assertEquals("ln(csc(x)-cot(x))", antiderivative);
         
     }
     

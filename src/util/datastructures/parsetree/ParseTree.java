@@ -1,11 +1,11 @@
 package util.datastructures.parsetree;
 
 // Java libraries
+import util.datastructures.mathfunctioncache.MathFunctionCache;
 import java.util.HashMap;
 import java.util.Map;
 // Custom libraries
 import util.datastructures.tree.BinaryTree;
-import util.datastructures.functionlookupmap.*;
 
 public class ParseTree extends BinaryTree<Token>{
     
@@ -34,7 +34,7 @@ public class ParseTree extends BinaryTree<Token>{
                  nodeData.getRValue(),nodeData.getOperator()),null,null);
         }
         else if(nodeData.getLValue() == null &&
-            FunctionLookUpMap.contains(nodeData.getOperator())){
+            MathFunctionCache.contains(nodeData.getOperator())){
             this.set_tree(new Token(nodeData.getLValue(),
                     nodeData.getRValue(),nodeData.getOperator()),null,null);
         }
@@ -440,7 +440,7 @@ public class ParseTree extends BinaryTree<Token>{
      */
     public boolean isLogOrTrig(String expression) {
         
-        return FunctionLookUpMap.contains(expression);
+        return MathFunctionCache.contains(expression);
         
     }
     

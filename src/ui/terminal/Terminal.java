@@ -8,7 +8,6 @@ package ui.terminal;
 
 // Import libraries
 import math.linearalgebra.Matrix;
-import math.vectorfunction.VectorFunction;
 import math.calculus.Integral;
 import math.calculus.Derivative;
 import java.util.Queue;
@@ -276,9 +275,7 @@ public class Terminal {
             make_matrix(function);
             matrices.put(name,function);
         }
-            
-        if(function.charAt(0) == '<')
-            System.out.println(make_vector_function(function).to_string());
+
         functions.put(name,function);
         
     }
@@ -395,34 +392,6 @@ public class Terminal {
         }
         
         return a;
-        
-    }
-    
-    public VectorFunction make_vector_function(String input_line){
-        
-        input_line = input_line.substring(1,input_line.length()-1);
-        Queue<String> entries = new LinkedList();
-        String entry = "";
-        int dimension = 0;
-        
-        for(int i = 0; i < input_line.length(); i++){
-            if(input_line.charAt(i) != ',')
-                entry += input_line.charAt(i);
-            else{
-                entries.add(entry);
-                entry = "";
-                dimension++;
-            }   
-        }
-        entries.add(entry);
-        dimension++;
-        
-        VectorFunction f = new VectorFunction(dimension);
-        for(int i = 0; i < dimension; i++){
-            f.assign_component(entries.remove(),i);
-        }
-        
-        return f;
         
     }
     
